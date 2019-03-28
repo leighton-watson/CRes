@@ -1,19 +1,19 @@
 function [S, f, s, t] = sourceFunction(A, L, srcStyle, resParams)
 % [S, f, s, t] = sourceFunction(A, L, srcStyle, resParams)
 %
-% Compute source time function in the time (s) and frequency (S) domains.
+% Compute source function in the time and frequency domains.
 % 
-% Inputs:
-% A = amplitude
-% L = width 
+% INPUT
+% A = source amplitude
+% L = source width
 % srcStyle = style of source mechanism ('Gauss' or 'Brune')
 % resParams = parameters to ensure consistency with resonance1d simulation
 %
-% Outputs
+% OUTPUT
 % S = source function in frequency domain
 % f = frequency vector
 % s = source function in time domain
-% t = time vector. Same as input
+% t = time vector
 
 T = resParams(1);
 N = resParams(2);

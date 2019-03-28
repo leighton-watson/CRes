@@ -1,5 +1,13 @@
 function [f0, Q] = resPeakProps(f,G)
-
+% computes resonant frequency and quality factor of fundamental resonant mode.
+%
+% INPUT
+% f = frequency vector
+% G = amplitude spectra
+%
+% OUTPUT
+% f0 = resonant frequency
+% Q = quality factor
 [Y,I] = max(abs(G)); 
 Is = I;
 Ys = Y;

@@ -1,8 +1,11 @@
 function P = pressurePerturbation(input, style, M)
 % P = pressurePerturbation(input)
 %
+% Computes pressure perturbation at specified distance from outlet
+% 
 % input = output structure from resonance1d
-% style = 'baffled piston' or 'monopole' description of sound radiation
+% style = style of acoustic radiation. Options are "baffled piston" or "monopole"
+% M = structure containing model parameters
 
     r = M.r; % distance from vent to receiver
     rho = M.rhoA; % density of air

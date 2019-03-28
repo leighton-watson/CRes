@@ -1,13 +1,11 @@
 function output = resonance1d(geometry, depth, freq, Nf, style, order, M)
 % output = resonance1d(geometry, depth, freq, Nf, style, order, M)
 %
-% evaluates the resonant frequencies of a crater with arbitrary
-% axisymmetic geometry
+% computes the acoustic response function for an axisymmetric crater
 %
 % INPUTS
-% geometry = structure containing the depth discretization (geometry.x) and 
-% radius of the crater at those depths (geometry.radius)
-% depth = depth of lava lake surface in crater
+% geometry = vector containing the depth (:,1) and radius (:,2) of the crater starting from the deepest depth
+% depth = depth of base of crater
 % freq = maximum and minimum frequency of interest
 % Nf = number of frequency samples
 % style = sound radiation description ('baffled piston' or 'monopole')
@@ -15,9 +13,9 @@ function output = resonance1d(geometry, depth, freq, Nf, style, order, M)
 % M = model parameters
 %
 % OUTPUTS
-% save outputs into the structure output
-% output.geometry = crater geometry in the same format as geometry
-% output.depth = depth of lava lake surface
+% solver outputs are saved into the structure output
+% output.geometry = crater geometry in the same format as input geometry
+% output.depth = depth of base of crater
 % output.f = frequency vector
 % output.T = transfer function
 % output.pOutlet = outlet pressure transfer function
