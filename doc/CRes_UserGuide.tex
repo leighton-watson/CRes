@@ -145,9 +145,11 @@
 \end{itemize}
 \end{itemize}
 
-{\bf CRes} is freely available online at \href{https://github.com/leighton-watson/CRes}{https://github.com/leighton-watson/CRes} and is distributed under the MIT license. 
+{\bf CRes} is freely available online at \href{https://github.com/leighton-watson/CRes}{https://github.com/leighton-watson/CRes} and is distributed under the MIT license (see \texttt{license.txt} for details). 
 
-
+%%%%%%%%%%%%%%%%
+%% MODEL DESCRIPTION %%
+%%%%%%%%%%%%%%%%
 \section{Model Description}
 Here, I provide an overview of {\bf CRes}. For more details see Watson et al., (2019). {\bf CRes} assumes linear wave propagation, which enables the infrasound signal, $\Delta p$, observed at a distance, $r$, from the crater outlet to be written as:
 \begin{equation}
@@ -167,7 +169,21 @@ where $\omega$ is the angular frequency.
 \caption{The modeling workflow is to start with a specified source function, $s(t)$, and take the Fourier transform to get $s(\omega)$. The infrasound signal in the frequency domain, $\Delta p(\omega,r)$, is calculated by equation~\ref{eq:model freq} and the inverse Fourier transform is used to obtain the infrasound signal in the time domain, $\Delta p(t,r)$. }
 \end{figure}
 
-The acoustic response function, $T$, is divided into 1.) the crater acoustic response function, $C$, which describes wave propagation and resonant modes inside the volcanic crater, and 2.) the atmospheric response function, $P$, which describes acoustic radiation from the crater to the infrasound station. 
+The acoustic response function, $T$, is divided into 1.) the crater acoustic response function, $C$, which describes wave propagation and resonant modes inside the volcanic crater, and 2.) the atmospheric response function, $P$, which describes acoustic radiation from the crater to the infrasound station. The crater acoustic response, $C$, is defined as
+\begin{equation}
+C(\omega) = \frac{U(\omega,0)}{s(\omega)},
+\label{eq:crater response function}
+\end{equation}
+ where $U$ is the volumetric flow rate associated with acoustic waves ($U=vA$ is the acoustic flow where $A$ is the cross-sectional area, which can vary as a function of depth, and $v$ is the vertical particle velocity). The atmosphere response function, $P$, is defined as
+\begin{equation}
+P(\omega,r) = \frac{\Delta p(\omega,r)}{U(\omega,0)},
+\label{eq:atmospheric response function}
+\end{equation}
+ allowing the acoustic response function, $T$, to be expressed as{}
+\begin{equation}
+T(\omega,r) = C(\omega) P(\omega,r) = \frac{U(\omega,0)}{s(\omega)} \frac{\Delta p(\omega,r)}{U(\omega,0)} = \frac{\Delta p(\omega,r)}{s(\omega)}.
+\label{eq:transfer function}
+\end{equation}
 
 \subsection{Crater Acoustic Response Function}
 
@@ -176,7 +192,7 @@ This section describes how to calculate the crater acoustic response function, $
 \frac{\partial U}{\partial t} + \frac{A}{\rho} \frac{\partial p}{\partial z} & = 0, \\
 \frac{\partial p}{\partial t} + \frac{K}{A} \frac{\partial U}{\partial z} & = 0,
 \end{align}
-where $p$ is the pressure, $U=vA$ is the acoustic flow where $A$ is the cross-sectional area, which can vary as a function of depth, and $v$ is the vertical particle velocity. The air inside the crater is described as an ideal gas with ambient density, $\rho$, and fluid bulk modulus, $K$, which is  proportional  to the ambient pressure for an ideal gas. Density and pressure are related by the ideal gas equation of state:
+where $p$ is the pressure. The air inside the crater is described as an ideal gas with ambient density, $\rho$, and fluid bulk modulus, $K$, which is  proportional  to the ambient pressure for an ideal gas. Density and pressure are related by the ideal gas equation of state:
 \begin{equation}
 p = \rho R T,
 \label{eq:ideal gas}
@@ -194,7 +210,7 @@ where $\gamma$ is the ratio of specific heats ($\gamma=1.4$ for diatomic gases s
 \floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,center},capbesidewidth=4.5cm}}]{figure}[\FBwidth]
 {\caption{Schematic of model. The infrasound signal, $\Delta p$, observed at a distance $r$ from the crater is related to the excitation source  at the base of the crater, $s$, by the acoustic response function, $T$, which includes the crater acoustic response function that describes wave propagation inside the crater and associated resonant modes, and  the atmosphere response function, which describes acoustic radiation from the crater outlet to the receiver.}
 \label{fig:charlesX}}
-{\includegraphics[width=9cm]{Fig_ModelSchematic}}
+{\includegraphics[width=8cm]{Fig_ModelSchematic}}
 \end{figure}
 
 The governing equations are solved in the frequency domain and can be written as a system of first-order ordinary differential equations:
@@ -208,6 +224,7 @@ i \omega p + \frac{K}{A} \frac{\partial U}{\partial z} & = 0.
 The model requires two boundary conditions, one at the bottom of the crater and one at the crater outlet. At the bottom, $z=-L$, of the crater the acoustic flow is specified as the source-time function:
 \begin{equation}
 U(t,-L) = s(t) = \iint_{A(L)} v(x,y,t)~dx~dy.
+\label{eq:volumetric flow rate}
 \end{equation}
 At the crater outlet, $z=0$, the pressure and acoustic flow are related by the terminating impedance, $Z_T$ \citep{Rossing2004}:
 \begin{equation}
@@ -230,8 +247,8 @@ X = \frac{Z_a}{\pi (ka)^2} \bigg[ \frac{(2ka)^3}{3} - \frac{(2ka)^5}{3^2 \cdot 5
 \end{equation}
  with $k$ the wavenumber, $a$ the crater radius at the outlet and $Z_a = \rho_a c_a/A(0)$ where $\rho_a$ and $c_a$ are the density and speed of sound in the atmosphere, respectively, and $A(0)$ is the cross-sectional area of the crater outlet. 
 
-\subsection{Atmospheric Response Function}
-This section describes how to calculate the atmospheric response function, $P$. Propagation of the infrasound signal from the crater outlet to the receiver is described as axisymmetric radiation from a baffled piston embedded in an infinite plane \citep{Rossing2004}:
+\subsection{Atmosphere Response Function}
+This section describes how to calculate the atmosphere response function, $P$. Propagation of the infrasound signal from the crater outlet to the receiver is described as axisymmetric radiation from a baffled piston embedded in an infinite plane \citep{Rossing2004}:
 \begin{equation}
 \Delta p(\omega,r) = i \omega \exp(-ikr) \frac{\rho_a a^2}{2r} \bigg[ \frac{2J_1 (ka \sin \theta)}{ka \sin \theta} \bigg] \frac{U(\omega,0)}{\pi a^2},
 \label{eq:acoustic radiation}
@@ -245,7 +262,6 @@ where $J_1$ is a Bessel function of order one, $\theta$ is the angle between the
 %%%%%%%%%%%%%%%%%%%%%
 %% NUMERICAL IMPLEMENTATION %%
 %%%%%%%%%%%%%%%%%%%%%
-
 \section{Numerical Implementation}
 Equations~\ref{eq:govern eq 1} and \ref{eq:govern eq 2} are solved using a summation-by-parts finite-difference discretization scheme \citep{DelReyFernandez2014a,Svard2014}, which is discussed in this section. 
 
@@ -270,25 +286,64 @@ p_0-Z_0 U_0 & =\hat{p}_0-Z_0 \hat{U}_0,
 p_N+Z_N U_N & = \hat{p}_N+Z_N \hat{U}_N,
 \label{eq:characteristic2}
 \end{align}
-where $Z = \rho c / A$ is the acoustic impedance.
-
-The velocity is specified at the base of the crater, $\hat{U}_0~=~\text{specified}$. Rearranging equation~\ref{eq:characteristic1} gives
+where $Z = \rho c / A$ is the acoustic impedance. The acoustic flow is specified at the base of the crater ($\hat{U}_0$ is known; equation~\ref{eq:volumetric flow rate}) and hence equation~\ref{eq:characteristic1} can be rearranged to give
 \begin{equation}
 \hat{p}_0 = p_0 + Z_0 (\hat{U}_0 - U_0).
 \end{equation}
-
 At the crater outlet, the pressure is related to the acoustic flow by the terminating impedance, $Z_T$:
 \begin{equation}
 \hat{p}_N = Z_T \hat{U}_N.
 \label{eq:outlet imped}
 \end{equation}
-
 The terminating impedance is calculated using a flanged opening approximation (equation~\ref{eq:terminating impedance}; \citealp{Kinsler2000, Rossing2004}).
 Substituting equation~\ref{eq:outlet imped} into equation~\ref{eq:characteristic2} gives the outlet boundary conditions:
 \begin{align}
 \hat{U}_N & = \frac{p_N + Z_N U_N}{Z_T+Z_N}, \\
 \hat{p}_N & = Z_T \bigg( \frac{p_N + Z_N U_N}{Z_T+Z_N} \bigg).
 \end{align}
+
+
+%%%%%%%%%%%%
+%% USING CRES %%
+%%%%%%%%%%%%
+\section{Using {\bf CRes}}
+This section covers the workflow of using {\bf CRes}, which is outlined below, and shows how to use {\bf CRes} to calculate the infrasound signal generated by acoustic resonance of a volcanic crater.
+\begin{enumerate}
+\item Define parameters and geometry
+\item Compute acoustic response function, $T$
+\begin{enumerate}
+\item Compute crater acoustic response function, $C$
+\item Compute atmosphere response function, $P$
+\end{enumerate}
+\item Specify source function
+\item Calculate infrasound signal 
+\end{enumerate}
+
+\subsection{Define parameters and geometry}
+
+The first step is to define the properties of the air within the crater and the atmosphere by calling the function \texttt{problemParameters.m}. In the current version of the code this function accepts no inputs and outputs a structure \texttt{M}. A future release will enable inputs. In the meantime, parameters are specified in the function file. {\bf CRes} allows for different properties (density, temperature) in the crater and atmosphere  but assumes constant properties within each domain.
+
+The next step is to specify the crater geometry as a matrix with two columns. The first column is the depth and the second column in the corresponding radius. The matrix must be arrange so that the depths monotonically decrease starting from the largest value.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.6\textwidth]{Fig_geometry}
+\caption{Format of two-column matrix containing geometry information.}
+\end{figure}
+
+\subsection{Compute acoustic response function, $T$}
+
+\subsubsection{Compute crater acoustic response function, $C$}
+
+\subsubsection{Compute atmosphere response function, $P$}
+
+\subsection{Specify source function}
+
+\subsection{Calculate infrasound signal}
+
+
+
+
+
 
 
 \newpage
