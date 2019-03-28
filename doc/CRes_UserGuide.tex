@@ -12,6 +12,8 @@
 \usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
 %\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
 \usepackage[small,labelfont=bf,up,textfont=it,up]{caption}
+\usepackage{sidecap}
+\usepackage{floatrow}
 
 \usepackage{booktabs} % Horizontal rules in tables
 
@@ -115,7 +117,7 @@
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-{\bf CRes} (Crater Resonance) is a one-dimensional (1D) numerical method for solving the linear acoustic wave equation within a volcanic crater. For a specified crater geometry and excitation source at the base of the crater, {\bf CRes} computes the velocity and pressure at the crater outlet and can propagate the signal to an infrasound receiver some distance from the outlet. The linear acoustic wave is written in terms of two first-order differential equations for pressure and acoustic flow and is solved by {\bf CRes} using a finite-difference frequency-domain method. {\bf CRes} is written in \texttt{MATLAB} and runs efficiently on a standard desktop/laptop computer. For more details and application of {\bf CRes} see:
+{\bf CRes} (Crater Resonance) is a one-dimensional (1D) numerical method for solving the linear acoustic wave equation within a volcanic crater. For a specified crater geometry and excitation source at the base of the crater, {\bf CRes} computes the velocity and pressure at the crater outlet and can propagate the signal to an infrasound receiver some distance from the outlet. The linear acoustic wave equation is written in terms of two first-order differential equations for pressure and acoustic flow and is solved by {\bf CRes} using a finite-difference frequency-domain method. {\bf CRes} is written in \texttt{MATLAB} and runs efficiently on a standard desktop/laptop computer. For more details and examples of the application of {\bf CRes} see:
 \begin{itemize}
 \item Watson, L. M., Dunham, E. M., and Johnson, J. B. Simulation and inversion of harmonic infrasound from open-vent volcanoes using an efficient quasi-1D crater model, \emph{Journal of Volcanology and Geothermal Research}, submitted 28 Dec 2018, revised 19 Mar 2019.
 \item Johnson, J. B., Watson, L. M., Palma, J. L., Dunham, E. M., and Anderson, J. F. (2018) Forecasting the eruption of an open-vent volcano using resonant infrasound tones, \emph{Geophysical Research Letters}, 45, \href{https://doi.org/10.1002/2017GL076506}{https://doi.org/10.1002/2017GL076506}.
@@ -125,27 +127,169 @@
 \begin{itemize}
 \item {\bf demo} - script files for demonstration
 \begin{itemize}
-\item \texttt{exampleX.m} - example script files.
-\item \texttt{Johnson2018.mat} - example crater geometry from \citet{Johnson2018}.
-\item \texttt{Richardson2014.mat} - example crater geometry from \citet{Richardson2014}.
+\item \texttt{exampleX.m} - example script files
+\item \texttt{Johnson2018.mat} - example crater geometry from \citet{Johnson2018}
+\item \texttt{Richardson2014.mat} - example crater geometry from \citet{Richardson2014}
 \end{itemize}
 
-\item {\bf doc} - documentation including user guide and license file. 
+\item {\bf doc} - documentation including user guide and license file
 \item{\bf source/SBPoperators} - function files associated with numerical implementation
-\item {\bf source/resonance} - function files associated with numerical implementation
+\item {\bf source/resonance} - function files for {\bf CRes}
 \begin{itemize}
-\item \texttt{resonance1d.m} - main code.
-\item \texttt{problemParameters} - specifies model parameters. 
-\item \texttt{pressurePerturbation.m} - computes pressure perturbation (infrasound signal) at a distance away from the crater.
-\item \texttt{flanged\_opening.m} - treatment of open end of crater. 
-\item \texttt{resPeakProps.m} - computes resonant frequency and quality factor of spectral peaks.
-\item \texttt{sourceFunction.m} - specifies source function (Gaussian or Brune).
+\item \texttt{resonance1d.m} - main code
+\item \texttt{problemParameters} - specifies model parameters
+\item \texttt{pressurePerturbation.m} - computes pressure perturbation (infrasound signal) at a distance away from the crater
+\item \texttt{flanged\_opening.m} - treatment of open end of crater
+\item \texttt{resPeakProps.m} - computes resonant frequency and quality factor of spectral peaks
+\item \texttt{sourceFunction.m} - specifies source function (Gaussian or Brune)
 \end{itemize}
 \end{itemize}
 
 {\bf CRes} is freely available online at \href{https://github.com/leighton-watson/CRes}{https://github.com/leighton-watson/CRes} and is distributed under the MIT license. 
 
-\section{Running the code}
+
+\section{Model Description}
+Here, I provide an overview of {\bf CRes}. For more details see Watson et al., (2019). {\bf CRes} assumes linear wave propagation, which enables the infrasound signal, $\Delta p$, observed at a distance, $r$, from the crater outlet to be written as:
+\begin{equation}
+\Delta p(t,r) = T(t,r) \ast s(t)
+\label{eq:model time}
+\end{equation}
+where $T$ is the acoustic response function, which depends on the crater and atmospheric properties, that describes the theoretical infrasound signal generated by an impulsive excitation at the base of the crater, and $s(t)$ is the finite-duration source at the base of the crater. The source expressed as a volumetric flow rate of air within the crater being push upwards, or pulled downwards, by the source process (m$^3$/s). {\bf CRes} is written in the frequency domain where the time-domain convolution is replaced by multiplication:
+\begin{equation}
+\Delta p(\omega,r) = T(\omega,r) s(\omega),
+\label{eq:model freq}
+\end{equation}
+where $\omega$ is the angular frequency.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{Fig_Workflow}
+\caption{The modeling workflow is to start with a specified source function, $s(t)$, and take the Fourier transform to get $s(\omega)$. The infrasound signal in the frequency domain, $\Delta p(\omega,r)$, is calculated by equation~\ref{eq:model freq} and the inverse Fourier transform is used to obtain the infrasound signal in the time domain, $\Delta p(t,r)$. }
+\end{figure}
+
+The acoustic response function, $T$, is divided into 1.) the crater acoustic response function, $C$, which describes wave propagation and resonant modes inside the volcanic crater, and 2.) the atmospheric response function, $P$, which describes acoustic radiation from the crater to the infrasound station. 
+
+\subsection{Crater Acoustic Response Function}
+
+This section describes how to calculate the crater acoustic response function, $C$. The crater is modeled as quasi-one-dimensional (allowing for changes in cross-sectional area with depth) and axisymmetric. Acoustic waves inside the crater are described by linear acoustics written as a system of first-order partial differential equations:
+\begin{align}
+\frac{\partial U}{\partial t} + \frac{A}{\rho} \frac{\partial p}{\partial z} & = 0, \\
+\frac{\partial p}{\partial t} + \frac{K}{A} \frac{\partial U}{\partial z} & = 0,
+\end{align}
+where $p$ is the pressure, $U=vA$ is the acoustic flow where $A$ is the cross-sectional area, which can vary as a function of depth, and $v$ is the vertical particle velocity. The air inside the crater is described as an ideal gas with ambient density, $\rho$, and fluid bulk modulus, $K$, which is  proportional  to the ambient pressure for an ideal gas. Density and pressure are related by the ideal gas equation of state:
+\begin{equation}
+p = \rho R T,
+\label{eq:ideal gas}
+\end{equation}
+where $R$ is the specific gas constant and $T$ is the temperature, not to be confused with response function $T$ in equations (\ref{eq:model time}) and (\ref{eq:model freq}). The speed of sound is
+\begin{equation}
+c = \sqrt{\gamma R T},
+\label{eq:sound speed}
+\end{equation}
+where $\gamma$ is the ratio of specific heats ($\gamma=1.4$ for diatomic gases such as air).
+
+
+\begin{figure}[t!]
+\centering
+\floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,center},capbesidewidth=4.5cm}}]{figure}[\FBwidth]
+{\caption{Schematic of model. The infrasound signal, $\Delta p$, observed at a distance $r$ from the crater is related to the excitation source  at the base of the crater, $s$, by the acoustic response function, $T$, which includes the crater acoustic response function that describes wave propagation inside the crater and associated resonant modes, and  the atmosphere response function, which describes acoustic radiation from the crater outlet to the receiver.}
+\label{fig:charlesX}}
+{\includegraphics[width=9cm]{Fig_ModelSchematic}}
+\end{figure}
+
+The governing equations are solved in the frequency domain and can be written as a system of first-order ordinary differential equations:
+\begin{align}
+i \omega U + \frac{A}{\rho} \frac{\partial p}{\partial z} & = 0, 
+\label{eq:govern eq 1} \\
+i \omega p + \frac{K}{A} \frac{\partial U}{\partial z} & = 0.
+\label{eq:govern eq 2}
+\end{align}
+
+The model requires two boundary conditions, one at the bottom of the crater and one at the crater outlet. At the bottom, $z=-L$, of the crater the acoustic flow is specified as the source-time function:
+\begin{equation}
+U(t,-L) = s(t) = \iint_{A(L)} v(x,y,t)~dx~dy.
+\end{equation}
+At the crater outlet, $z=0$, the pressure and acoustic flow are related by the terminating impedance, $Z_T$ \citep{Rossing2004}:
+\begin{equation}
+\frac{p(\omega,0)}{U(\omega,0)} = Z_T(\omega).
+\end{equation}
+A constant pressure boundary condition could be applied could be applied at the outlet. However, this results in perfect reflection of acoustic waves. In order to allow acoustic waves to escape into the atmosphere and be recorded as infrasound, a more accurate description of the outlet is required. Here, a flanged opening is assumed \citep{Olson1957,Kinsler2000,Rossing2004} and the terminating impedance is given by  \citep{Rossing2004}
+\begin{equation}
+Z_T = R + i X,
+\label{eq:terminating impedance}  
+\end{equation}
+ where $i$ indicates the imaginary unit, $R$ is the acoustic resistance
+\begin{equation}
+R = Z_a \bigg[ \frac{(ka)^2}{2} - \frac{(ka)^4}{2^2 \cdot 3} + \frac{(ka)^6}{2^2 \cdot 3^2 \cdot 4} - \hdots \bigg],
+\label{eq:acoustic resistance}
+\end{equation}
+ and $X$ is the acoustic reactance
+\begin{equation}
+X = \frac{Z_a}{\pi (ka)^2} \bigg[ \frac{(2ka)^3}{3} - \frac{(2ka)^5}{3^2 \cdot 5} + \frac{(2ka)^7}{3^2 \cdot 5^2 \cdot 7} - \hdots \bigg],   
+\label{eq:acoustic reactance}
+\end{equation}
+ with $k$ the wavenumber, $a$ the crater radius at the outlet and $Z_a = \rho_a c_a/A(0)$ where $\rho_a$ and $c_a$ are the density and speed of sound in the atmosphere, respectively, and $A(0)$ is the cross-sectional area of the crater outlet. 
+
+\subsection{Atmospheric Response Function}
+This section describes how to calculate the atmospheric response function, $P$. Propagation of the infrasound signal from the crater outlet to the receiver is described as axisymmetric radiation from a baffled piston embedded in an infinite plane \citep{Rossing2004}:
+\begin{equation}
+\Delta p(\omega,r) = i \omega \exp(-ikr) \frac{\rho_a a^2}{2r} \bigg[ \frac{2J_1 (ka \sin \theta)}{ka \sin \theta} \bigg] \frac{U(\omega,0)}{\pi a^2},
+\label{eq:acoustic radiation}
+\end{equation}
+where $J_1$ is a Bessel function of order one, $\theta$ is the angle between the negative $z-$axis and the receiver (e.g., $\theta=\pi/2$ for a receiver located on the plane perpendicular to crater orientation), $\rho_a$ is the density of the atmosphere, and $a$ is the crater radius at the outlet. The baffled piston model reduces to the monopole source description \cite[e.g.,][]{Woulff1976,Johnson2014} for radiation in a half-space in the low frequency limit when $ka~\ll~1$,
+\begin{equation}
+\Delta p(\omega, r) = i \omega \exp(-ikr) \frac{\rho_a a^2}{2r}\frac{U(\omega,0)}{\pi a^2}.
+\label{eq:acoustic radiation monopole}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%
+%% NUMERICAL IMPLEMENTATION %%
+%%%%%%%%%%%%%%%%%%%%%
+
+\section{Numerical Implementation}
+Equations~\ref{eq:govern eq 1} and \ref{eq:govern eq 2} are solved using a summation-by-parts finite-difference discretization scheme \citep{DelReyFernandez2014a,Svard2014}, which is discussed in this section. 
+
+The domain ($-L \leq z \leq 0$) is discretized into $N+1$ evenly spaced grid points, $z_i,~i~=0,1, 2,\hdots,N$ where $z_0=-L$ is at the base of the crater where the source is located and $z_N=0$ is at the top of the crater. A field such as $p(z, t)$ is approximated at the grid points with the grid values stored in a vector $\boldsymbol{p}(t)$ with components $p_i(t) \approx p(z_i, t)$. The spatial derivatives are approximated using a summation-by-parts (SBP) differentiation matrix, $\boldsymbol{D}$, such that the vector $\boldsymbol{Dp}$ contains approximations to $\partial p / \partial z$ at the grid points \citep{Karlstrom2016a}. The discrete equations are
+\begin{align}
+i \omega \boldsymbol{U} + \frac{A}{\rho_\text{amb}} \boldsymbol{D p} & = -\theta_1 (U_0-\hat{U}_0) \boldsymbol{e_0} - \theta_2 (U_N - \hat{U}_N) \boldsymbol{e_N}, \\
+i \omega \boldsymbol{p} + \frac{K}{A} \boldsymbol{DU} & = -\theta_3 (p_0 - \hat{p}_0) \boldsymbol{e_0} - \theta_4 (p_N - \hat{p}_N) \boldsymbol{e_N},
+\end{align}
+where the terms on the right are the implementation of the boundary conditions in the SAT framework. Scalars $\theta_1-\theta_4$ are penalty parameters that are chosen to ensure a stable numerical discretization  \citep{Kozdon2012a}:
+\begin{align}
+\theta_1 & = \theta_3 = \frac{c}{H_{00}}, \\
+\theta_2 & = \theta_4 = \frac{c}{H_{NN}},
+\end{align}
+where $\boldsymbol{H}$ is a symmetric positive definite matrix such that $\boldsymbol{D} = \boldsymbol{H}^{-1} \boldsymbol{Q}$ where $\boldsymbol{Q}$ is an almost skew symmetric matrix with the property that $\boldsymbol{Q}^T + \boldsymbol{Q} = \text{diag}[-1~0~\hdots~0~1]$ \citep{Karlstrom2016a}.
+
+The variables with a circumflex, $\hat{U}_0, \hat{U}_N, \hat{p}_0, \hat{p}_N$, are the target values for acoustic flow and pressure at the boundary points while $U_0, U_N, p_0$ and $p_N$ are the known grid values. The target values are chosen to satisfy the desired boundary conditions exactly while preserving the characteristic variable carrying information from the interior of the domain to the boundary. The vectors $\boldsymbol{e}_0 = [1~0~\hdots~0]^T$ and $\boldsymbol{e}_N = [0~\hdots~0~1]^T$ isolate the effect of the penalty terms to the boundary points \citep{Karlstrom2016a}.
+
+The characteristic variables that carry information from the interior of the domain to the boundaries are
+\begin{align}
+p_0-Z_0 U_0 & =\hat{p}_0-Z_0 \hat{U}_0,
+\label{eq:characteristic1} \\
+p_N+Z_N U_N & = \hat{p}_N+Z_N \hat{U}_N,
+\label{eq:characteristic2}
+\end{align}
+where $Z = \rho c / A$ is the acoustic impedance.
+
+The velocity is specified at the base of the crater, $\hat{U}_0~=~\text{specified}$. Rearranging equation~\ref{eq:characteristic1} gives
+\begin{equation}
+\hat{p}_0 = p_0 + Z_0 (\hat{U}_0 - U_0).
+\end{equation}
+
+At the crater outlet, the pressure is related to the acoustic flow by the terminating impedance, $Z_T$:
+\begin{equation}
+\hat{p}_N = Z_T \hat{U}_N.
+\label{eq:outlet imped}
+\end{equation}
+
+The terminating impedance is calculated using a flanged opening approximation (equation~\ref{eq:terminating impedance}; \citealp{Kinsler2000, Rossing2004}).
+Substituting equation~\ref{eq:outlet imped} into equation~\ref{eq:characteristic2} gives the outlet boundary conditions:
+\begin{align}
+\hat{U}_N & = \frac{p_N + Z_N U_N}{Z_T+Z_N}, \\
+\hat{p}_N & = Z_T \bigg( \frac{p_N + Z_N U_N}{Z_T+Z_N} \bigg).
+\end{align}
+
 
 \newpage
 \section{Examples}
@@ -154,13 +298,13 @@ For demonstration purposes, two example script files are included that simulate 
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.97\textwidth]{example1}
+\includegraphics[width=0.97\textwidth]{Fig_example1}
 \caption{Outputs from \texttt{example1.m} showing (a) crater geometry with lava lake at 120~m below the crater rim, (b) infrasound signal in the time domain and (c) in the frequency domain. Insets show the source (volumetric flow rate at base of crater/surface of lava lake).}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.97\textwidth]{example2}
+\includegraphics[width=0.97\textwidth]{Fig_example2}
 \caption{Outputs from \texttt{example2.m} showing simulated infrasound signal as a function of depth. (a) Crater geometry. (b) Resonant frequency and (c) quality factor as a function of depth. Infrasound signal in the (d) time and (e) frequency domains for crater depths of (i) 50~m, (ii) 80~m, and (iii) 120~m. Acoustic waves are excited by a Gaussian pulse with $\sigma=0.2$~s, the same source as for \texttt{example1.m}.}
 \end{figure}
 
@@ -245,7 +389,7 @@ Note that the baffled piston model reduces to the monopole model in the low freq
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.9\textwidth]{PressurePerturbation}
+\includegraphics[width=0.9\textwidth]{Fig_PressurePerturbation}
 \end{figure}
 
 It is noted that an alternative wave propagation code could be used to propagate the signal from the crater outlet to the infrasound receiver. For instance, if the surrounding topography outside of the crater is too complex to be approximated as axisymmetric then a 3D wave propagation code such as \emph{infraFDTD} \citep{Kim2011} could be used. 
