@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
 \usepackage{blindtext} % Package to generate dummy text throughout this template 
 
@@ -10,7 +10,9 @@
 \usepackage[english]{babel} % Language hyphenation and typographical rules
 
 \usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
-\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+%\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage[small,labelfont=bf,up,textfont=it,up]{caption}
+
 \usepackage{booktabs} % Horizontal rules in tables
 
 \usepackage{enumitem} % Customized lists
@@ -30,7 +32,8 @@
 \pagestyle{fancy} % All pages have headers and footers
 \fancyhead{} % Blank out the default header
 \fancyfoot{} % Blank out the default footer
-\fancyhead[C]{Running title $\bullet$ May 2016 $\bullet$ Vol. XXI, No. 1} % Custom header text
+%\fancyhead[C]{CRes User Manual $\bullet$ 2019 $\bullet$ Watson} % Custom header text
+\fancyhead[C]{CRes User Manual~~~$\bullet$~~~Watson~~~$\bullet$~~~2019} % Custom header text
 \fancyfoot[RO,LE]{\thepage} % Custom footer text
 
 \usepackage{titling} % Customizing the title section
@@ -40,6 +43,43 @@
 % math packages
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{amsfonts}
+
+% figure packages
+\usepackage{graphicx}
+
+\usepackage{natbib} % bibliography
+
+\usepackage{listings} % for including code snippets
+\usepackage{color}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    %numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
@@ -51,7 +91,7 @@
 \posttitle{\end{center}} % Article title closing formatting
 \title{CRes User Guide} % Article title
 \author{%
-\textsc{Leighton M. Watson} % Your name
+\textsc{Leighton M. Watson} \\% Your name
 \normalsize Stanford University \\ % Your institution
 \normalsize \href{mailto:leightonwatson@stanford.edu}{leightonwatson@stanford.edu} % Your email address
 %\and % Uncomment if 2 authors are required, duplicate these 4 lines if more
@@ -75,25 +115,220 @@
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-CRes (Crater Resonance) 
-
-%------------------------------------------------
-
-\section{Methods}
-
-Maecenas sed ultricies felis. Sed imperdiet dictum arcu a egestas. 
+{\bf CRes} (Crater Resonance) is a one-dimensional (1D) numerical method for solving the linear acoustic wave equation within a volcanic crater. For a specified crater geometry and excitation source at the base of the crater, {\bf CRes} computes the velocity and pressure at the crater outlet and can propagate the signal to an infrasound receiver some distance from the outlet. The linear acoustic wave is written in terms of two first-order differential equations for pressure and acoustic flow and is solved by {\bf CRes} using a finite-difference frequency-domain method. {\bf CRes} is written in \texttt{MATLAB} and runs efficiently on a standard desktop/laptop computer. For more details and application of {\bf CRes} see:
 \begin{itemize}
-\item Donec dolor arcu, rutrum id molestie in, viverra sed diam
-\item Curabitur feugiat
-\item turpis sed auctor facilisis
-\item arcu eros accumsan lorem, at posuere mi diam sit amet tortor
-\item Fusce fermentum, mi sit amet euismod rutrum
-\item sem lorem molestie diam, iaculis aliquet sapien tortor non nisi
-\item Pellentesque bibendum pretium aliquet
+\item Watson, L. M., Dunham, E. M., and Johnson, J. B. Simulation and inversion of harmonic infrasound from open-vent volcanoes using an efficient quasi-1D crater model, \emph{Journal of Volcanology and Geothermal Research}, submitted 28 Dec 2018, revised 19 Mar 2019.
+\item Johnson, J. B., Watson, L. M., Palma, J. L., Dunham, E. M., and Anderson, J. F. (2018) Forecasting the eruption of an open-vent volcano using resonant infrasound tones, \emph{Geophysical Research Letters}, 45, \href{https://doi.org/10.1002/2017GL076506}{https://doi.org/10.1002/2017GL076506}.
 \end{itemize}
-\blindtext % Dummy text
 
-Text requiring further explanation\footnote{Example footnote}.
+\section{Directory}
+\begin{itemize}
+\item {\bf demo} - script files for demonstration
+\begin{itemize}
+\item \texttt{exampleX.m} - example script files.
+\item \texttt{Johnson2018.mat} - example crater geometry from \citet{Johnson2018}.
+\item \texttt{Richardson2014.mat} - example crater geometry from \citet{Richardson2014}.
+\end{itemize}
+
+\item {\bf doc} - documentation including user guide and license file. 
+\item{\bf source/SBPoperators} - function files associated with numerical implementation
+\item {\bf source/resonance} - function files associated with numerical implementation
+\begin{itemize}
+\item \texttt{resonance1d.m} - main code.
+\item \texttt{problemParameters} - specifies model parameters. 
+\item \texttt{pressurePerturbation.m} - computes pressure perturbation (infrasound signal) at a distance away from the crater.
+\item \texttt{flanged\_opening.m} - treatment of open end of crater. 
+\item \texttt{resPeakProps.m} - computes resonant frequency and quality factor of spectral peaks.
+\item \texttt{sourceFunction.m} - specifies source function (Gaussian or Brune).
+\end{itemize}
+\end{itemize}
+
+{\bf CRes} is freely available online at \href{https://github.com/leighton-watson/CRes}{https://github.com/leighton-watson/CRes} and is distributed under the MIT license. 
+
+\section{Running the code}
+
+\newpage
+\section{Examples}
+
+For demonstration purposes, two example script files are included that simulate crater acoustic resonance at Villarrica volcano. \texttt{example1.m} computes the resonant modes of Villarrica's crater for a single depth while \texttt{example2.m} shows how to compute the resonant frequency and quality factor as a function of the position of the lava lake within the crater. The crater geometry has been previously calculated from visual observations using structure-from-motion \citep{Johnson2018} and is saved as \texttt{Johnson2018.mat}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.97\textwidth]{example1}
+\caption{Outputs from \texttt{example1.m} showing (a) crater geometry with lava lake at 120~m below the crater rim, (b) infrasound signal in the time domain and (c) in the frequency domain. Insets show the source (volumetric flow rate at base of crater/surface of lava lake).}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.97\textwidth]{example2}
+\caption{Outputs from \texttt{example2.m} showing simulated infrasound signal as a function of depth. (a) Crater geometry. (b) Resonant frequency and (c) quality factor as a function of depth. Infrasound signal in the (d) time and (e) frequency domains for crater depths of (i) 50~m, (ii) 80~m, and (iii) 120~m. Acoustic waves are excited by a Gaussian pulse with $\sigma=0.2$~s, the same source as for \texttt{example1.m}.}
+\end{figure}
+
+
+\newpage
+\section{{\bf CRes} Functions}
+This section contains the details and syntax of the different function files used by {\bf CRes}:
+\begin{enumerate}[label=\roman*]
+\item \texttt{resonance1d}
+\item \texttt{flanged\_opening}
+\item \texttt{problemParameters}
+\item \texttt{pressurePerturbation}
+\item \texttt{resPeakProps}
+\item \texttt{sourceFunction}
+\end{enumerate}
+
+\subsection{resonance1d}
+\begin{lstlisting}[language=Matlab]
+function output = resonance1d(geometry, depth, freq, Nf, style, order, M)
+% computes the acoustic response function for an axisymmetric crater
+%
+% INPUT
+% geometry = vector containing the depth (:,1) and radius (:,2) of the crater starting from the deepest depth
+% depth = depth of base of crater
+% freq = maximum and minimum frequency of interest
+% Nf = number of frequency samples
+% style = sound radiation description ('baffled piston' or 'monopole')
+% order = internal order of accuracy
+% M = model parameters
+%
+% OUTPUT
+% solver outputs are saved into the structure output
+% output.geometry = crater geometry in the same format as input geometry
+% output.depth = depth of base of crater
+% output.f = frequency vector
+% output.T = transfer function
+% output.pOutlet = outlet pressure transfer function
+% output.vOutlet = outlet velocity transfer function
+% output.P = far-field pressure perturbation transfer function
+\end{lstlisting}
+
+\subsection{problemParameters}
+This function defines the properties of crater and atmosphere and saves these parameters into a structure that can be accessed by the other functions. 
+
+\begin{lstlisting}[language=Matlab]
+function M = problemParameters()
+% Store properties of atmosphere and crater in structure M
+%
+% INPUT
+% No inputs
+%
+% OUTPUT
+% M = structure containing properties of atmosphere and crater
+% M.gamma = ratio of heat capacities
+% M.r = distance from outlet to receiver
+% M.R = specific gas constant
+% M.TA = atmospheric temperature [C]
+% M.rhoA = density of atmospheric air [kg/m^3]
+% M.cA = sound of sound in atmosphere [m/s]
+% M.TC = crater temperature [C]
+% M.rhoC = density of air within crater [kg/m^3]
+% M.cC = speed of sound within crater [m/s]
+% M.pC = pressure inside crater [Pa]
+\end{lstlisting}
+
+
+\subsection{pressurePerturbation}
+\texttt{pressurePerturbation.m} takes the outputs of \texttt{resonance1d.m}, specifically the acoustic flow at the outlet, and computes the pressure perturbation at a specified distance from the crater outlet. Here, we include two possible axisymmetric acoustic radiation models: 
+\begin{enumerate}
+\item Baffled piston \citep{Rossing2004}:
+\begin{equation}
+\Delta p(\omega,r) = i\omega \exp(-ikr) \frac{\rho_a a^2}{2r} \bigg[ \frac{2J_1(ka\sin \theta)}{ka \sin \theta}\bigg] \frac{U(\omega,0)}{\pi a^2},
+\end{equation}
+where $\Delta p(\omega,r)$ is the excess pressure at a distance $r$ from the crater outlet, $J_1$ is a Bessel function of order one, $\theta$ is the angle between the negative $z-$axis and the receiver (e.g., $\theta=\pi/2$ for a receiver located on the plane perpendicular to crater orientation), $\rho_a$ is the density of the atmosphere, $a$ is the crater radius at the outlet, and $U(\omega,0)$ is the acoustic flow at the crater outlet. The baffled piston model accounts for the finite dimension of the crater outlet.
+
+\item Monopole \citep{Woulff1976,Johnson2014}:
+\begin{equation}
+\Delta p(\omega, r) = i \omega \exp(-ikr) \frac{\rho_a a^2}{2r}\frac{U(\omega,0)}{\pi a^2}.
+\end{equation}
+Note that the baffled piston model reduces to the monopole model in the low frequency limit when $ka \ll 1$.
+\end{enumerate}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.9\textwidth]{PressurePerturbation}
+\end{figure}
+
+It is noted that an alternative wave propagation code could be used to propagate the signal from the crater outlet to the infrasound receiver. For instance, if the surrounding topography outside of the crater is too complex to be approximated as axisymmetric then a 3D wave propagation code such as \emph{infraFDTD} \citep{Kim2011} could be used. 
+
+\begin{lstlisting}[language=Matlab]
+function P = pressurePerturbation(input, style, M)
+% Computes pressure perturbation at specified distance from outlet
+% 
+% INPUT
+% input = output structure from resonance1d
+% style = style of acoustic radiation. Options are "baffled piston" or "monopole"
+% M = structure containing model parameters
+%
+% OUTPUT
+% P = pressure perturbation in frequency domain at specified distance from outlet
+\end{lstlisting}
+
+\subsection{flanged\_opening}
+\begin{lstlisting}[language=Matlab]
+function Z = flanged_opening(f,rho,c,a)
+% computes terminating impedance of opening through rigid flange
+%
+% INPUT
+% omega = angular frequency []
+% rho = density of atmospheric air [kg/m^3]
+% c = sound speed in atmosphere [m/s]
+% a = radius of outlet [m]
+%
+% OUTLET
+% Z = terminating impedance
+\end{lstlisting}
+
+
+\subsection{resPeakProps}
+\texttt{resPeakProps.m} computes the resonant frequency and quality factor of the fundamental resonant mode of the provided amplitude spectra. 
+
+\begin{lstlisting}[language=Matlab]
+function [f0, Q] = resPeakProps(f,G)
+% computes resonant frequency and quality factor of fundamental resonant mode.
+%
+% INPUT
+% f = frequency vector
+% G = amplitude spectra
+%
+% OUTPUT
+% f0 = resonant frequency
+% Q = quality factor
+\end{lstlisting}
+
+
+\subsection{sourceFunction}
+\texttt{sourceFunction.m} can be used to compute the excitation source in both time and frequency domains. Currently there are two possible source styles to choose from: 1.) Gaussian:
+\begin{equation}
+s(t) = S\exp \bigg( - \frac{1}{2} \frac{t^2}{\sigma^2} \bigg),
+\end{equation}
+where $S$ is the source amplitude and $\sigma$ is the source width, and 2.) Brune
+\begin{equation}
+s(t) = StH(t) \exp \bigg( - \frac{t}{\sigma} \bigg),
+\end{equation}
+where $H$ is the Heaviside function. Alternatively, instead of using \texttt{sourceFunction.m} the user can define their own source function.
+
+\begin{lstlisting}[language=Matlab]
+function [S,f,s,t] = sourceFunction(A,L,srcStyle,resParams)
+% Compute source function in the time and frequency domains.
+% 
+% INPUT
+% A = source amplitude
+% L = source width
+% srcStyle = style of source mechanism ('Gauss' or 'Brune')
+% resParams = parameters to ensure consistency with resonance1d simulation
+%
+% OUTPUT
+% S = source function in frequency domain
+% f = frequency vector
+% s = source function in time domain
+% t = time vector
+\end{lstlisting}
+
+
+
+\newpage
+\bibliographystyle{elsarticle-harv}
+\bibliography{/Users/lwat054/Documents/Stanford_University/Research/References/Bibliography/library.bib}
 
 \end{document}
 
