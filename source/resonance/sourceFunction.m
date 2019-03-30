@@ -8,6 +8,8 @@ function [S, f, s, t] = sourceFunction(A, L, srcStyle, resParams)
 % L = source width
 % srcStyle = style of source mechanism ('Gauss' or 'Brune')
 % resParams = parameters to ensure consistency with resonance1d simulation
+% and is given by [T N] where T is the total time and N is the number of
+% grid points in time
 %
 % OUTPUT
 % S = source function in frequency domain

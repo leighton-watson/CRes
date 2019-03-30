@@ -74,6 +74,8 @@ xlabel('Radius (m)');
 ylabel('Depth (m)');
 axis normal
 
+return
+
 
 %% RESONANCE 1D %%
 %
