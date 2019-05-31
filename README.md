@@ -4,6 +4,8 @@ CRes (Crater Resonance) is a one-dimensional (1D) numerical method for solving t
 
 For more details see: Watson, L. M., Dunham, E. M., and Johnson, J. B. Simulation and inversion of harmonic infrasound from open-vent volcanoes using an efficient quasi-1D crater model, Journal of Volcanology and Geothermal Research, [https://doi.org:10.1016/j.jvolgeores.2019.05.007](https://doi.org/10.1016/j.jvolgeores.2019.05.007).
 
+The first release of this repository is archived at Zenodo: [https://doi.org/10.5281/zenodo.3235683](https://doi.org/10.5281/zenodo.3235683)
+
 <a href="https://doi.org/10.5281/zenodo.3235683"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3235683.svg" alt="DOI"></a>
 
 ### How do I get set up? ###
