@@ -128,7 +128,7 @@
 \item {\bf demo} - script files for demonstration
 \begin{itemize}
 \item \texttt{exampleX.m} - example script files
-\item \texttt{Johnson2018.mat} - example crater geometry from \citet{Johnson2018}
+\item \texttt{Johnson2018.mat} - example crater geometry from \citet{Johnson2018_Villarrica}
 \item \texttt{Richardson2014.mat} - example crater geometry from \citet{Richardson2014}
 \end{itemize}
 
@@ -143,8 +143,7 @@
 \item \texttt{resPeakProps.m} - computes resonant frequency and quality factor of spectral peaks
 \item \texttt{sourceFunction.m} - specifies source function (Gaussian or Brune)
 \end{itemize}
-
-\item {\bf JVGR2019} - contains script files and data required to recreate the figures from \citet{Watson2019_infrasonicresonance}.
+\item {\bf JVGR2019} - contains script files and data required to recreate the figures from \citet{Watson2019_infrasonic_resonance}. See \texttt{README.md} in this folder for more details.
 \end{itemize}
 
 {\bf CRes} is freely available online at \href{https://github.com/leighton-watson/CRes}{https://github.com/leighton-watson/CRes} and is distributed under the MIT license (see \texttt{license.txt} for details). 
@@ -325,7 +324,7 @@ M = problemParameters(); % load parameter values from problemParameters.m
 \end{lstlisting}
 This function accepts no inputs and outputs a structure \texttt{M} that contains the properties (density, temperature, pressure etc.) of the air in the crater and the atmosphere. Also defined in \texttt{problemParameters.m} is the distance from the crater outlet to where the infrasound signal is calculated. A future release will enable the function to accept input property values. Until then, parameters are specified in the function file. {\bf CRes} allows for properties (density, temperature) to be different within the crater and atmosphere but assumes properties are constant.
 
-The next step is to specify the crater geometry as a matrix with two columns. The first column is the depth (at equally spaced intervals) and the second column is the corresponding radius. The matrix must be arranged so that the depths monotonically decrease starting from the largest value. For the examples included here the crater geometry is from \citet{Johnson2018} and saved as \texttt{Johnson2018.mat}, which can be loaded and formatted by the following code:
+The next step is to specify the crater geometry as a matrix with two columns. The first column is the depth (at equally spaced intervals) and the second column is the corresponding radius. The matrix must be arranged so that the depths monotonically decrease starting from the largest value. For the examples included here the crater geometry is from \citet{Johnson2018_Villarrica} and saved as \texttt{Johnson2018.mat}, which can be loaded and formatted by the following code:
 \begin{lstlisting}[language=Matlab]
 load('Johnson2018'); % load geometry
 shape = flipud(geometry); % reformat geometry matrix to be read by solver
@@ -434,7 +433,7 @@ The resonant frequency, \texttt{f0}, and quality factor, \texttt{Q}, of the infr
 \newpage
 \section{Examples}
 
-For demonstration purposes, two example script files are included that simulate crater acoustic resonance at Villarrica volcano. \texttt{example1.m} computes the resonant modes of Villarrica's crater for a single depth while \texttt{example2.m} shows how to compute the resonant frequency and quality factor as a function of the position of the lava lake within the crater. The crater geometry has been previously calculated from visual observations using structure-from-motion \citep{Johnson2018} and is saved as \texttt{Johnson2018.mat}.
+For demonstration purposes, two example script files are included that simulate crater acoustic resonance at Villarrica volcano. \texttt{example1.m} computes the resonant modes of Villarrica's crater for a single depth while \texttt{example2.m} shows how to compute the resonant frequency and quality factor as a function of the position of the lava lake within the crater. The crater geometry has been previously calculated from visual observations using structure-from-motion \citep{Johnson2018_Villarrica} and is saved as \texttt{Johnson2018.mat}.
 
 \begin{figure}[h!]
 \centering
