@@ -101,6 +101,7 @@ end
 
 nIter = 1000; % number of steps
 
+
 tic % start timing
 [x, f0, Q, misfit, simSpec, f, count] = mcmc(nIter, dx, ... % perform MCMC inversion
     geomParams,geomFlag, geomStyle, srcParams, srcFlag, srcStyle,...
