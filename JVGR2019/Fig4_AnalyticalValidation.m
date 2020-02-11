@@ -4,7 +4,7 @@
 % Compare numerical simulation of infrasound signal from a pipe with the
 % analytical solutions for resonant frequency 
 
-clear all; clc; %close all;
+clear all; %clc; %close all;
 set(0,'DefaultLineLineWidth',3);
 set(0,'DefaultAxesFontSize',20);
 cmap = get(gca,'ColorOrder');

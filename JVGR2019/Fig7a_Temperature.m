@@ -14,7 +14,7 @@ addpath ../source/SBPoperators
 addpath Functions/
 
 figHand = figure(1); clf;
-set(figHand,'Position',[100 100 1000 280]);
+%set(figHand,'Position',[100 100 1000 280]);
 
 
 %% Resonance 1D Parameters %%
@@ -79,7 +79,10 @@ for j = 1:length(Tmin)
     transFunc = A.P;   
     spectra = transFunc .* S_pos;
     
-    [f0(j) Q(j)] = resPeakProps(A.f, spectra);
+    B.f = A.f;
+    B.P = spectra;
+    
+    [f0(j) Q(j)] = resPeakProps(B, 'sim');
     
     % plot signal in frequency domain
     subplot(1,3,3);

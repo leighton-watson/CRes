@@ -66,23 +66,25 @@ R = [R_air R_mix];
 gamma = [gamma_air gamma_mix];
 
 LineStyle = {'-','-'};
-alpha = [1 0.9]
+alpha = [1 0.9];
 LineWidth = [2 3];
 
 
 for i = 1:length(R)
     
     RC = R(i);
-    M = problemParameters_GasComp(gamma(i),TA,TC,RA,RC,rhoA)
+    M = problemParameters_GasComp(gamma(i),TA,TC,RA,RC,rhoA);
         
     % solver
     A = resonance1d(shape, depth, freq, Nf, [], [], M);
     
     B = A.pOutlet(1:N/2+1); % field to plot and compute properties for
     B = B.*S(1:N/2+1);
+    C.f = A.f;
+    C.P = B;
     
     % resonant frequency and quality factor
-    [f0(i) Q(i)] = resPeakProps(A.f, B);
+    [f0(i) Q(i)] = resPeakProps(C, 'sim');
     
     BF = [B conj(B(end-1:-1:2))]; % reflect about f = 0. Take complex conjugate for negative frequencies
     BF(N/2+1) = real(BF(N/2+1)); % entry at Nyquist must be real
