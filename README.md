@@ -8,13 +8,15 @@ The first release of this repository is archived at Zenodo: [https://doi.org/10.
 
 <a href="https://doi.org/10.5281/zenodo.3235683"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3235683.svg" alt="DOI"></a>
 
+The second release of this repository will be archived at Zenodo. The second release includes the inversion code.
+
 ### How do I get set up? ###
 * Clone this respository to your local directory
 * demo contains example script files
 * doc contains the user guide
 
 ### Who do I talk to? ###
-* Leighton Watson: leightonwatson@stanford.edu
+* Leighton Watson: leightonmwatson@gmail.com
 
 
 
