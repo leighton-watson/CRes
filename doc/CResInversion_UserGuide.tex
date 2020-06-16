@@ -1,0 +1,324 @@
+\documentclass[10pt]{article}
+
+\usepackage{blindtext} % Package to generate dummy text throughout this template 
+
+\usepackage[sc]{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\linespread{1.05} % Line spacing - Palatino needs more space between lines
+\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+
+\usepackage[english]{babel} % Language hyphenation and typographical rules
+
+\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
+%\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage[small,labelfont=bf,up,textfont=it,up]{caption}
+\usepackage{sidecap}
+\usepackage{floatrow}
+
+\usepackage{booktabs} % Horizontal rules in tables
+
+\usepackage{enumitem} % Customized lists
+\setlist[itemize]{noitemsep} % Make itemize lists more compact
+
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\roman{subsection}} % roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+%\fancyhead[C]{CRes User Manual $\bullet$ 2019 $\bullet$ Watson} % Custom header text
+\fancyhead[C]{CRes Inversion User Manual~~~$\bullet$~~~Watson~~~$\bullet$~~~2020} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+\usepackage{titling} % Customizing the title section
+
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+% math packages
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% figure packages
+\usepackage{graphicx}
+
+\usepackage{natbib} % bibliography
+
+\usepackage{listings} % for including code snippets
+\usepackage{color}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    %numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\setlength{\droptitle}{-4\baselineskip} % Move the title up
+
+\pretitle{\begin{center}\Huge\bfseries} % Article title formatting
+\posttitle{\end{center}} % Article title closing formatting
+\title{CRes Inversion User Guide} % Article title
+\author{%
+\textsc{Leighton M. Watson} \\% Your name
+\normalsize Stanford University \\ % Your institution
+\normalsize \href{mailto:leightonwatson@stanford.edu}{leightonwatson@stanford.edu} % Your email address
+%\and % Uncomment if 2 authors are required, duplicate these 4 lines if more
+%\textsc{Jane Smith}\thanks{Corresponding author} \\[1ex] % Second author's name
+%\normalsize University of Utah \\ % Second author's institution
+%\normalsize \href{mailto:jane@smith.com}{jane@smith.com} % Second author's email address
+}
+\date{\today} % Leave empty to omit a date
+\renewcommand{\maketitlehookd}{%
+}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+% Print the title
+\maketitle
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+This user guide describes how to invert harmonic infrasound observations for crater geometry using {\bf CRes} (Crater Resonance), which is a one-dimensional (1D) wave propagation code written in \texttt{MATLAB} that solves linear acoustics within a quasi one-dimensional crater. This user guide is complementary to the {\bf CRes} user guide and focuses on the inversion methodology and implementation. For more details and examples of using {\bf CRes} to invert harmonic infrasound observations for crater geometry see:
+\begin{itemize}
+\item Watson, L. M., Johnson, J. B., Sciotto, M., and Cannata, A. (20XX) Changes in crater geometry revealed by inversion of harmonic infrasound observations: 24 December 2018 eruption of Mount Etna, Italy, \emph{Geophysical Research Letters}, in prep.
+\item Watson, L. M., Dunham, E. M., and Johnson, J. B. (2019) Simulation and inversion of harmonic infrasound from open-vent volcanoes using an efficient quasi-1D crater model, \emph{Journal of Volcanology and Geothermal Research}, \href{https://doi.org/10.1016/j.jvolgeores.2019.05.007}{https://doi.org/10.1016/j.jvolgeores.2019.05.007}.
+\end{itemize}
+
+\section{Directory}
+\begin{itemize}
+\item {\bf demo} - script files for demonstration
+\item {\bf doc} - documentation including user guide and license file. The {\bf CRes} user guide is also located in this folder.
+\item{\bf source} - function files used by {\bf CRes} and the inversion scheme
+\item {\bf GRL2020} - contains script files and data to recreate the figures from Watson et al. (2020).
+\item {\bf JVGR2019} - contains script files and data to recreate the figures from \cite{Watson2019_infrasonic_resonance}.
+\end{itemize}
+
+{\bf CRes} and the associated inversion code are freely available online at \href{https://github.com/leighton-watson/CRes}{https://github.com/leighton-watson/CRes} and is distributed under the MIT license (see \texttt{license.txt} for details). 
+
+%%%%%%%%%%%%%%%%
+%% INVERSION SCHEME %%
+%%%%%%%%%%%%%%%%
+\section{Inversion Scheme}
+{\bf CRes} runs efficiently on a desktop computer and,  depending on the number of grid points used to discretize the crater geometry, can simulate the infrasound signal for a specified crater geometry within $\sim1$~s. Therefore, because the forward problem runs efficiently, a Markov-Chain Monte-Carlo (MCMC) style inversion scheme is used. $\vec{x}$ is defined as a vector of model parameters and the inversion is begun from an initial estimate, $\vec{x}_0$. The steps for the $i$th iteration are shown below:
+\begin{enumerate}
+    \item Take a random step in all parameter directions to calculate a vector of proposed parameter values:
+    \begin{equation}
+        \vec{x}_{i}^* = \frac{\vec{x}_{i-1}}{\vec{x}_0} + \vec{h}_{i-1} \Delta x
+        \label{eq:inversion step}
+    \end{equation}
+    where $\vec{x}_{i}^*$ is the vector of proposed parameter values, $\vec{x}_{i-1}$ is the vector of parameter values at the previous iteration and $\vec{x}_0$ is the initial estimate. $\vec{h}_{i-1}$ is the same dimension as $\vec{x}$ with each entry randomly sampled from the uniform distribution [-1,1] for each iteration and $\Delta x$ is the scalar step size. If necessary, repeat the procedure until a value of $\vec{x}_{i}^*$ is chosen that satisfies the specified bounds. 
+    \item Simulate infrasound signal for $\vec{x}_{i}^*$ using {\bf CRes}
+    \item Evaluate the misfit function for the proposed parameters, $M(\vec{x}_{i}^*)$
+    \item Accept the proposed parameters, $\vec{x}_{i} = \vec{x}_{i}^*$, if:
+    \begin{enumerate}
+        \item The misfit is reduced: $M(\vec{x}_{i}^*) < M(\vec{x}_{i-1})$
+        \item $\gamma < \alpha$ where $\gamma$ is a random number sampled from the uniform distribution $[0,1]$ and $\alpha$ is a scalar parameter, $\alpha \in [0, 1]$. This allows the inversion to escape local minima.
+    \end{enumerate}
+    Otherwise, rejected the proposed parameters and keep the previous solution, $\vec{x}_{i} = \vec{x}_{i-1}$
+\end{enumerate}
+These steps are repeated until the specified number of iterations is reached.
+
+\subsection{Misfit Function}
+
+In the current version of the inversion code, the misfit function is defined as the difference between the normalized amplitude of the simulated spectra and the data. The misfit function at iteration $i$ is given by:
+\begin{equation}
+	M(\vec{x}_i) = ||A_\text{data} - A(\vec{x}_i)||_2,
+	\label{eq:misfit 2020}
+\end{equation}
+where $A_\text{data}$ and $A(\vec{x}_i)$ are the normalized amplitude spectra of the data and simulated spectra at the $i$th iteration, respectively. This is the misfit function used by Watson et al. (2020). 
+
+\cite{Watson2019_infrasonic_resonance} previously defined the misfit function as the difference between the peak frequency and quality factor:
+\begin{equation}
+    M(\vec{x}_i) = \beta_f \frac{|f_0^d - f_0(\vec{x}_i)|}{f_0^d} + \beta_Q \frac{|Q^d - Q(\vec{x}_i)|}{Q^d},
+    \label{eq:misfit 2019}
+\end{equation}
+where $f_0^d$ and $Q^d$ are the peak frequency and quality factor of the data, $f_0(\vec{x}_i)$ and $Q(\vec{x}_i)$ are the peak frequency and quality factor of the simulated infrasound signal at iteration $i$ for parameters $\vec{x}_i$, and $\beta_f$ and $\beta_Q$ are weighting parameters. Future updates may add the capability to choose between these two misfit functions. 
+
+\subsection{Parameterization}
+
+The crater geometry is parameterized as a depth, $L$, and $N$ radii values, $r^k$ where $k = 1,..., N$. Hence, the parameter vector at the $i$th iteration is $\vec{x}_i = [L_i, r_i^1, r_i^2, ..., r_i^N]$. The radii values are equally spaced in depth from the crater outlet to the base. The depth evolves with each iteration and hence the depths of radii values are also updated with each iteration. The depth of the $k$th radii value at the $i$th iteration is given by:
+\begin{equation}
+z_i^k = (k-1) \frac{L_i}{N-1}.
+\end{equation}
+The crater geometry is linearly interpolated between the $N$ radii values to create a crater profile that can be used to simulate the infrasound signal. Future work may consider alternative interpolation methods that do not create kinks in the crater geometry. 
+
+While the inversion scheme is designed to invert harmonic infrasound observations for the crater geometry, there is also the capability to invert for the width of a specified source (Gaussian or Brune). However, this has not been extensively tested. Furthermore, inverting for the source and geometry simultaneously results in an unstable inversion. Future work may explore source parameterization and inversion.
+
+\section{Using {\bf CRes} Inversion}
+
+The {\bf demo} folder contains several example script files with synthetic and real data:
+\begin{itemize}
+\item \texttt{forward$\_$synthetic.m} performs the forward problem and simulates the infrasound signal for a given crater geometry. The infrasound spectra is saved as \texttt{forwardSpectra.mat}.
+\item \texttt{inversion$\_$synthetic.m} solves the inversion problem with the synthetic spectra.
+\item \texttt{inversion$\_$data.m} solves the inversion problem with real data. Here, we use data from the December 2018 eruption of Mount Etna (Italy), saved as \texttt{Etna2018Phase1.mat} and \texttt{Etna2018Phase3.mat} for before and after the onset of the flank eruption, respectively.
+\item \texttt{visualization$\_$synthetic.m} and \texttt{visualization$\_$data.m} display the inversion results. 
+\end{itemize}
+
+In order to perform the inversion, there are several sets of parameters that need to be specified. Firstly, the parameters that control the forward simulations. These include the frequency range to simulate and the temperature of the crater and atmosphere.
+\begin{lstlisting}[language=Matlab]
+% set the parameters for the resonance1d calculations 
+T = 25; % total time (s)
+N = 250; % number of grid points (formulas assume even N)
+dt = T/N; % time step (s)
+Nyquist = 1/(2*dt); % Nyquist frequency (Hz)
+Nf = N/2+1; % number of frequency samples
+freq = [0 Nyquist]; % frequency range (Hz)
+discrParams = [T N Nf Nyquist dt]; % save parameters into array
+
+craterTemp = 100; % crater temperature
+atmoTemp = 0; % atmospheric temperature
+temp = [craterTemp, atmoTemp]; 
+
+order = 4; % order of numerical scheme (4, 6 or 8)
+style = 'baffled piston'; % acoustic radiation model ('monopole' or ' baffled piston')
+M = problemParametersInv(craterTemp,atmoTemp); % problem parameters required for resonance1d
+\end{lstlisting}
+
+Secondly, there are several options in the inversion scheme that need to be specified including the number of iterations, parameter step size, and frequency range of the misfit function (equation~\ref{eq:misfit 2020}).
+\begin{lstlisting}[language=Matlab]
+nIter = 10000; % number of steps
+dx = 0.05; % step size % use step size of 0.05 for paper inversions
+freqLim = 3; % high cut frequency limit for misfit function (Hz)
+\end{lstlisting}
+
+Thirdly, the inversion needs to be initialized and parameter bounds specified. Here, we only invert for the crater geometry and assume a specified source. 
+\begin{lstlisting}[language=Matlab]
+geomFlag = 1; % invert for geometry (boolean, 0 = no, 1 = yes)
+geomR0 = 100; % radius of initial cylinder
+geomDepth = 150; % depth 
+geomParams = [geomDepth geomR0 geomR0 geomR0 geomR0 geomR0]; % first value is depth, other values are radius points that are equally spaced
+geomLowerBnds = [50 60 1 1 1 1 1 1];
+geomUpperBnds = [150 120 120 120 120 120 120 120];
+nx = length(geomParams)-1; % number of geometry parameters
+\end{lstlisting}
+
+There are currently two inversion scheme included in the repository, \texttt{mcmc$\_$spec} and \texttt{mcmc$\_$spec$\_$noFilt}. Both of these inversion scheme use the MCMC scheme described above and the misfit function shown in equation~\ref{eq:misfit 2020}. The difference is that in \texttt{mcmc$\_$spec} the simulated infrasound signal is bandpass filtered. This enables the simulated signal to be processed in the same way as the data may be processed. The filter properties are specified by:
+\begin{lstlisting}[language=Matlab]
+filterband = [0.25 4.8]; % frequency band to filter
+filterorder = 4; % order of butterworth filter
+Fs = 10; % sampling frequency
+filterProps = [filterband, filterorder, Fs]; % filter properties - same as for data
+\end{lstlisting}
+
+Note that there are numerous variables that must be specified to run the inversion. Details are included in the function files and examples are shown below for \texttt{mcmc$\_$spec$\_$noFilt} and \texttt{mcmc$\_$spec}, respectively:
+
+\begin{lstlisting}[language=Matlab]
+[x, misfit, simSpec, f, count] = mcmc_spec_noFilt(nIter, dx, ... % perform MCMC inversion
+    geomParams, geomFlag, srcParams, srcFlag, srcStyle,...
+    lowerBnds, upperBnds, discrParams, temp, ...
+    data_freq, freqLim);
+\end{lstlisting}
+
+\begin{lstlisting}[language=Matlab]
+[x, misfit, simSpec, f, count] = mcmc_spec(nIter, dx, ... % perform MCMC inversion
+    geomParams, geomFlag, srcParams, srcFlag, srcStyle,...
+    lowerBnds, upperBnds, discrParams, temp, ...
+    filterProps, data_freq, freqLim);
+\end{lstlisting}
+
+The outputs from the inversion are:
+\begin{itemize}
+\item \texttt{x} - inversion parameter values at each successful iteration. 
+\item \texttt{misfit} - value of misfit at each successful iteration (a successful iteration is defined as where the misfit function is reduced or $\gamma < \alpha$).
+\item \texttt{simSpec} - simulated amplitude spectra.
+\item \texttt{f} - frequency vector.
+\item \texttt{count} - number of successful iterations.
+\end{itemize}
+
+
+\section{Examples}
+\subsection{Synthetic Inversion}
+Here, we perform a synthetic inversion. We prescribe the crater geometry with the representative Villarrica (Chile) geometry used by \cite{Johnson2018_Villarrica}. This geometry is saved in the {\bf demo} directory as  \texttt{Johnson2018.mat}. The crater has a depth of 120~m.
+
+\texttt{forward$\_$synthetic.m} performs the forward problem to simulate the infrasound signal for the prescribed crater geometry. The crater temperature is 100$^\circ$C and the atmospheric temperature is $0^\circ$C, which gives speed of sound of 387~m/s and 331~m/s, respectively. The source is a Gaussian pulse:
+\begin{equation}
+s(t) = \exp \bigg( -\frac{1}{2} \frac{t^2}{\sigma^2} \bigg),
+\end{equation}
+with $\sigma=0.2~s$ controls the width of the pulse. 
+
+We initialize the crater geometry as a cylinder with a radius of 100~m and a depth of 150~m and use $N=7$ radii values to parameterize the geometry. Figure~\ref{fig:syn inversion} shows the initial crater geometry and simulated infrasound spectra, which is a poor match to the synthetic data. We perform 10,000 iterations using $\Delta x=0.05$ and $\alpha=0.1$ with the misfit function is calculated between 0~Hz and 3~Hz. The inverted infrasound signal converges to the synthetic data and the inverted crater geometry well matches the synthetic geometry.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{synthetic_inversion}
+\caption{Synthetic inversion results showing (a) crater geometry and (b) infrasound spectra. Shaded region in (a) indicates $\pm1$ standard deviation in crater geometry parameters.}
+\label{fig:syn inversion}
+\end{figure}
+
+\subsection{Mount Etna Inversion}
+We now consider harmonic infrasound observations recorded during the December 2018 eruption of Mount Etna (Italy). For more details, see Watson et al. (20XX). Here, we consider the harmonic infrasound observations recorded after the flank eruption and use the inversion scheme presented here to invert for the crater geometry. 
+
+We initialize the crater geometry as a cylinder with a radius of 100~m and a depth of 200~m and use $N=5$ radii values to parameterize the geometry. Based on satellite observations, the crater outlet radius is constrained to be between 80~m and 120~m while the other parameters are unconstrained. We assume a crater temperature of $100^\circ$C and an atmospheric temperature is $0^\circ$C. The source is described as a Brune spectra:
+\begin{equation}
+s(t) = t H(t) \exp\bigg(-\frac{t}{\sigma} \bigg),
+\end{equation}
+where $H$ is the Heaviside function and $\sigma$ controls the width of the source. We assume $\sigma=0.3$~s.
+
+The inversions are run for $1\times10^5$ iterations with $\Delta x = 0.05$ and $\alpha = 0.1$ with the misfit function is calculated between 0~Hz and 3~Hz. The simulated infrasound signals are high pass filtered at 0.25~Hz with a 4th order Butterworth filter to match the processing applied to the data.
+
+Inversion results are shown in Figure~\ref{fig:data inversion}. The output spectra is a much better fit to the infrasound spectra than the initial estimate for the cylindrical crater. The output crater geometry has an outlet radius of 117~m and a depth of 164~m. The crater narrow significantly at depth with a base radius of 18~m.
+
+In addition to plotting the mean crater geometry, we can plot distributions of the various geometry parameters, as shown in Figure~\ref{fig:data corr}. This can shed insight on the inversion results, such as showing how well constrained different parameters are or are not. Dependencies between various parameters can be determined by plotting the correlations between parameters.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{data_inv_geom_spectra.pdf}
+\caption{Inversion results for after the onset of the December 24, 2018 flank eruption of Mount Etna showing (a) crater geometry and (b) infrasound spectra. Shaded region in (a) indicates $\pm$1 standard deviation in crater geometry parameters}
+\label{fig:data inversion}
+\end{figure}
+
+\begin{figure}[t!]
+\centering
+\includegraphics[width=1\textwidth]{data_inv_corrolations}
+\caption{Distributions of geometry parameters (depth, radius at z=0, 50, and 100 m) and correlations between the parameters. Note that the inversion outputs radii values at $N$ positions equally spaced in depth between outlet and base of crater. Therefore, the output parameters are interpolated between to determine the distributions at specified depths. }
+\label{fig:data corr}
+\end{figure}
+
+\newpage
+\bibliographystyle{elsarticle-harv}
+\bibliography{/Users/lwat054/Documents/Stanford_University/Research/References/Bibliography/library.bib}
+
+\end{document}
+
+
+
+
