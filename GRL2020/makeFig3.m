@@ -24,6 +24,8 @@ addpath ../source/SBPoperators/
 figHand1 = figure(1); clf;
 set(figHand1,'Position',[100 100 900 800]);
 
+load EMFO_spectra.mat
+
 %% analytical solutions for peak frequency and quality factor %%
 
 R = [12 50 150];
@@ -31,12 +33,12 @@ L = 1:1:500;
 c = 575;
 
 % peak frequency from data
-f0_before = 0.60;
-f0_after = 0.36;
+f0_before = EMFO_before.f0;
+f0_after = EMFO_after.f0;
 
 % quality factor from data
-Q_before = 4.0;
-Q_after = 6.1;
+Q_before = EMFO_before.Q;
+Q_after = EMFO_after.Q;
 
 for i = 1:length(R)
     
@@ -68,32 +70,29 @@ xlabel('Quality Factor');
 L_before = c/(4*f0_before) - (8.*R(1))./(3.*pi);
 L_after = c/(4*f0_after) - (8.*R(1))./(3.*pi);
 
-subplot(2,2,3);
+subplot(2,2,1);
 vline(f0_before);
 vline(f0_after);
 
 hline(L_before);
 hline(L_after);
 
-subplot(2,2,4);
+subplot(2,2,2);
 vline(Q_before);
 vline(Q_after);
 
+
 %% load data %%
 
-load Etna2018Phase1.mat; % spectra have been previously calculated 
-
 subplot(2,2,3);
-plot(dataF, abs(dataAmp)./max(abs(dataAmp)),'k');
+plot(EMFO_before.f, EMFO_before.spec,'k');
 xlim([0 3]);
 xlabel('Frequency (Hz)');
 ylabel('Normalized Amplitude');
 hold on;
 
-load Etna2018Phase3.mat; % spectra have been previously calculated
-
 subplot(2,2,4);
-plot(dataF, abs(dataAmp)./max(abs(dataAmp)),'k');
+plot(EMFO_after.f, EMFO_after.spec,'k');
 xlim([0 3])
 xlabel('Frequency (Hz)');
 ylabel('Normalized Amplitude');
@@ -102,8 +101,8 @@ hold on;
 %% simulate infrasound spectra with CRes %%
 
 %%% RESONANCE 1D PARAMETERS %%%
-T = 250;
-N = 2500;
+T = 500;
+N = 5000;
 dt = T/N; % time step
 t = [0:N-1]*dt; % vector of time grid points [s]
 tshift = 0;
@@ -111,7 +110,7 @@ tshift = 0;
 Nyquist = 1/(2*dt); % Nyquist frequency [Hz]
 freq = [0, Nyquist]; % range of frequencies [Hz]
 Nf = N/2+1; % number of frequency samples
-df = Nyquist/(Nf-1); % frequency interval
+df = Nyquist/(Nf-1) % frequency interval
 
 %%% PROBLEM PARAMETERS %%%
 M.gamma = 1.4; % ratio of heat capacities
@@ -140,8 +139,8 @@ A = 1; % source amplitude
 L = 0.3; % width of source; % amplitude of source
 [S,f,s,ts] = sourceFunction(A,L,srcStyle, resParams);
 
-f0_before = 0.63;
-f0_after = 0.39;
+f0_before = EMFO_before.f0;
+f0_after = EMFO_after.f0;
 c = M.cC;
 a = 12; % crater radius
 L_before = c/(4*f0_before) - (8.*a)./(3.*pi);
@@ -150,7 +149,7 @@ L_after = c/(4*f0_after) - (8.*a)./(3.*pi);
 %% CYLINDRICAL PIPE %%
 
 %%% BEFORE ERUPTION %%%
-dz = 10; % increment of depth discretization
+dz = 1; % increment of depth discretization
 z = 0:dz:L_before; % depth
 depth = max(z);
 r = a*ones(size(z)); % vector of radius
@@ -170,7 +169,7 @@ xlim([0 3]);
 [f0_simb,Q_simb] = resPeakProps(A.f, abs(dp)./max(abs(dp)));
 
 %%% AFTER ERUPTION %%%
-dz = 10; % increment of depth discretization
+dz = 1; % increment of depth discretization
 z = 0:dz:L_after; % depth
 depth = max(z);
 r = a*ones(size(z)); % vector of radius

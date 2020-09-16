@@ -1,11 +1,10 @@
-%% FIG S3 %%
+%% FIG 4 %%
 %
-% Generate figure showing inversion results for different crater
-% temperatures for before the onset of the flank eruption. Inversion 
-% results have been previously calculated and are saved in invOutput/.
+% Generate figure showing inversion results. Inversion results have been
+% previously calculated and are saved in invOutput/.
 %
 % Written by Leighton Watson
-% March 11, 2020
+% March 10, 2020
 % leightonwatson@stanford.edu // leightonmwatson@gmail.com
 
 clear all; clc;
@@ -26,13 +25,10 @@ set(figHand1,'Position',[100 100 1200 600]);
 figHand2 = figure(2); clf;
 set(figHand2,'Position',[100 100 1200 400]);
 
-%%% load data %%%
-dataStr = {'Etna2018Phase1.mat'};
-
-%%% crater temperature %%%
-outputStr = {'InvOut_Etna2018Phase1_Nit100000_R0100m_D200m_T100C.mat',...
-    'InvOut_Etna2018Phase1_Nit100000_R0100m_D200m_T200C.mat',...
-    'InvOut_Etna2018Phase1_Nit100000_R0100m_D200m_T300C.mat'};
+% specify data and inversion result files
+dataStr = {'EMFO_before.mat','EMFO_after.mat'};
+outputStr = {'InvOut_EMFO_before_Nit100000_R0100m_D200m_T100C_freqLim2_nx5.mat',...
+    'InvOut_EMFO_after_Nit100000_R0100m_D200m_T100C_freqLim2_nx5.mat'};
 
 % iterate over all output files
 
@@ -54,13 +50,15 @@ for i = 1:length(outputStr)
     shapeF = geomFunction(geomParamsMmean);
     depthF = shapeF(1,1);
     h = plot(shapeF(:,2), shapeF(:,1),'Color',cmap(i,:)); hold on;
-    h.Parent.YTick = [0 25 50 75 100 125 150 175 200];
+    h.Parent.YTick = [0 50 100 150 200 250 300];
     plot(-shapeF(:,2), shapeF(:,1),'Color',cmap(i,:));
     plot([-shapeF(1,2) shapeF(1,2)],[depthF depthF],'Color',cmap(i,:));
     set(gca,'YDir','Reverse'); 
     xlabel('Radius (m)'); ylabel('Depth (m)');
     xlim([-150 150])
+    ylim([0 300])
     
+      
     avg_radius = mean(shapeF(:,2));
     crater_vol(i) = depthF * pi * avg_radius^2;
     
@@ -93,21 +91,24 @@ for i = 1:length(outputStr)
         
     end
     
+    
+    
     %% spectra %%
     
     figure(1); subplot(1,2,2);
     if i == 1
         for j = 1:length(dataStr)
             load(dataStr{j});
-            h = plot(dataF, abs(dataAmp)./max(abs(dataAmp)),'Color','k');
-            h.Color(4) = 0.5;
+            h = plot(dataF, abs(dataAmp)./max(abs(dataAmp)),'Color',cmap(j,:));
+            h.Color(4) = 0.3;
             h.Parent.YTick = [];
-            hold on; xlim([0 3]);
+            hold on; xlim([0 2]);
             xlabel('Frequency (Hz)'); 
         end
         
     end
     
+       
     % source
     [S, ~, ~, ~] = sourceFunction(1, srcParams, srcStyle, discrParams); % compute source in frequency domain
     % resonance 1d properties
@@ -165,7 +166,7 @@ for i = 1:length(outputStr)
         
         if m == 1 % plot depth
             subplot(1, length(depths)+1,1);
-            h = histogram(xBurnIn(:,1).*geomParams(1),'Normalization','probability');
+            h = histogram(xBurnIn(:,1).*geomParams(1));
             hold on; box on;
             h.Parent.YTick = {};
             h.BinWidth = 1;
@@ -176,7 +177,7 @@ for i = 1:length(outputStr)
         end
         
         subplot(1,length(depths)+1,m+1);
-        h = histogram(param_hist(:,m),'Normalization','probability');
+        h = histogram(param_hist(:,m));
         hold on; box on;
         h.Parent.YTick = {};
         h.BinWidth = 1;
@@ -186,6 +187,19 @@ for i = 1:length(outputStr)
         
     end
     toc
+        
+        
+
+    
 
 end
 
+%%
+figure(2);
+h = subplot(1,5,1); xlim([0 300]);
+h = subplot(1,5,2); xlim([80 120]);
+h = subplot(1,5,3); xlim([40 120]);
+h.XTick = [40 80 120];
+subplot(1,5,4); xlim([0 100]);
+h = subplot(1,5,5); xlim([0 80]);
+h.XTick = [0 40 80];
