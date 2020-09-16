@@ -19,7 +19,7 @@ addpath ../source/inv/
 
 %% load and plot inversion input %%
 
-dataStr = 'forwardSpectra';
+dataStr = 'forwardSpectraSynthetic';
 datafile = strcat(dataStr,'.mat');
 load(datafile); % load data
 data_freq = [dataF, dataAmp]; % format data
@@ -43,7 +43,7 @@ ylabel('\Delta p(\omega,r)');
 
 %% load inversion output %%
 
-load InvOut_forwardSpectra_Nit10000_R0100m_D150m_T100C_freqLim3_nx7.mat;
+load SyntheticInvOut_Nit1000_R0100m_D150m_T100C_freqLim3_nx7;
 
 %% crater geometry %%    
 

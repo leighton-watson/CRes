@@ -94,8 +94,8 @@
 \title{CRes Inversion User Guide} % Article title
 \author{%
 \textsc{Leighton M. Watson} \\% Your name
-\normalsize Stanford University \\ % Your institution
-\normalsize \href{mailto:leightonwatson@stanford.edu}{leightonwatson@stanford.edu} % Your email address
+\normalsize University of Oregon \\ % Your institution
+\normalsize \href{mailto:lwatson2@uoregon.edu}{lwatson2@uoregon.edu} % Your email address
 %\and % Uncomment if 2 authors are required, duplicate these 4 lines if more
 %\textsc{Jane Smith}\thanks{Corresponding author} \\[1ex] % Second author's name
 %\normalsize University of Utah \\ % Second author's institution
@@ -119,7 +119,7 @@
 \section{Introduction}
 This user guide describes how to invert harmonic infrasound observations for crater geometry using {\bf CRes} (Crater Resonance), which is a one-dimensional (1D) wave propagation code written in \texttt{MATLAB} that solves linear acoustics within a quasi one-dimensional crater. This user guide is complementary to the {\bf CRes} user guide and focuses on the inversion methodology and implementation. For more details and examples of using {\bf CRes} to invert harmonic infrasound observations for crater geometry see:
 \begin{itemize}
-\item Watson, L. M., Johnson, J. B., Sciotto, M., and Cannata, A. (20XX) Changes in crater geometry revealed by inversion of harmonic infrasound observations: 24 December 2018 eruption of Mount Etna, Italy, \emph{Geophysical Research Letters}, in prep.
+\item Watson, L. M., Johnson, J. B., Sciotto, M., and Cannata, A. (2020) Changes in crater geometry revealed by inversion of harmonic infrasound observations: 24 December 2018 eruption of Mount Etna, Italy, \emph{Geophysical Research Letters}, in press.
 \item Watson, L. M., Dunham, E. M., and Johnson, J. B. (2019) Simulation and inversion of harmonic infrasound from open-vent volcanoes using an efficient quasi-1D crater model, \emph{Journal of Volcanology and Geothermal Research}, \href{https://doi.org/10.1016/j.jvolgeores.2019.05.007}{https://doi.org/10.1016/j.jvolgeores.2019.05.007}.
 \end{itemize}
 
@@ -127,8 +127,9 @@ This user guide describes how to invert harmonic infrasound observations for cra
 \begin{itemize}
 \item {\bf demo} - script files for demonstration
 \item {\bf doc} - documentation including user guide and license file. The {\bf CRes} user guide is also located in this folder.
+\item {\bf inversion\_demo} - script files demonstrating how to invert harmonic infrasound observations for crater geometry. Contains synthetic and real data examples.
 \item{\bf source} - function files used by {\bf CRes} and the inversion scheme
-\item {\bf GRL2020} - contains script files and data to recreate the figures from Watson et al. (2020).
+\item {\bf GRL2020} - contains script files and data to recreate the figures from \cite{Watson2020_GRL}.
 \item {\bf JVGR2019} - contains script files and data to recreate the figures from \cite{Watson2019_infrasonic_resonance}.
 \end{itemize}
 
@@ -138,7 +139,9 @@ This user guide describes how to invert harmonic infrasound observations for cra
 %% INVERSION SCHEME %%
 %%%%%%%%%%%%%%%%
 \section{Inversion Scheme}
-{\bf CRes} runs efficiently on a desktop computer and,  depending on the number of grid points used to discretize the crater geometry, can simulate the infrasound signal for a specified crater geometry within $\sim1$~s. Therefore, because the forward problem runs efficiently, a Markov-Chain Monte-Carlo (MCMC) style inversion scheme is used. $\vec{x}$ is defined as a vector of model parameters and the inversion is begun from an initial estimate, $\vec{x}_0$. The steps for the $i$th iteration are shown below:
+{\bf CRes} runs efficiently on a desktop computer and,  depending on the number of grid points used to discretize the crater geometry, can simulate the infrasound signal for a specified crater geometry within $\sim1$~s. Therefore, because the forward problem runs efficiently, a Markov-Chain Monte-Carlo (MCMC) style inversion scheme is used and can run in several hours, depending on the number of iterations. 
+
+The vector of model parameters is defined as $\vec{x}$ and the inversion is begun from an initial estimate, $\vec{x}_0$. The steps for the $i$th iteration are shown below:
 \begin{enumerate}
     \item Take a random step in all parameter directions to calculate a vector of proposed parameter values:
     \begin{equation}
@@ -269,7 +272,7 @@ The outputs from the inversion are:
 \subsection{Synthetic Inversion}
 Here, we perform a synthetic inversion. We prescribe the crater geometry with the representative Villarrica (Chile) geometry used by \cite{Johnson2018_Villarrica}. This geometry is saved in the {\bf demo} directory as  \texttt{Johnson2018.mat}. The crater has a depth of 120~m.
 
-\texttt{forward$\_$synthetic.m} performs the forward problem to simulate the infrasound signal for the prescribed crater geometry. The crater temperature is 100$^\circ$C and the atmospheric temperature is $0^\circ$C, which gives speed of sound of 387~m/s and 331~m/s, respectively. The source is a Gaussian pulse:
+\texttt{forward$\_$synthetic.m} performs the forward problem to simulate the infrasound signal for the prescribed crater geometry. The crater temperature is 100$^\circ$C and the atmospheric temperature is $0^\circ$C, which gives speed of sound of 387~m/s in the crater and 331~m/s in the atmosphere. The source is a Gaussian pulse:
 \begin{equation}
 s(t) = \exp \bigg( -\frac{1}{2} \frac{t^2}{\sigma^2} \bigg),
 \end{equation}
@@ -279,13 +282,13 @@ We initialize the crater geometry as a cylinder with a radius of 100~m and a dep
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=1\textwidth]{synthetic_inversion}
+\includegraphics[width=1\textwidth]{Fig_synthetic_inversion}
 \caption{Synthetic inversion results showing (a) crater geometry and (b) infrasound spectra. Shaded region in (a) indicates $\pm1$ standard deviation in crater geometry parameters.}
 \label{fig:syn inversion}
 \end{figure}
 
 \subsection{Mount Etna Inversion}
-We now consider harmonic infrasound observations recorded during the December 2018 eruption of Mount Etna (Italy). For more details, see Watson et al. (20XX). Here, we consider the harmonic infrasound observations recorded after the flank eruption and use the inversion scheme presented here to invert for the crater geometry. 
+We now consider harmonic infrasound observations recorded during the December 2018 eruption of Mount Etna (Italy). For more details, see \cite{Watson2020_GRL}. Here, we consider the harmonic infrasound observations recorded after the flank eruption and use the inversion scheme presented here to invert for the crater geometry. 
 
 We initialize the crater geometry as a cylinder with a radius of 100~m and a depth of 200~m and use $N=5$ radii values to parameterize the geometry. Based on satellite observations, the crater outlet radius is constrained to be between 80~m and 120~m while the other parameters are unconstrained. We assume a crater temperature of $100^\circ$C and an atmospheric temperature is $0^\circ$C. The source is described as a Brune spectra:
 \begin{equation}
@@ -301,14 +304,14 @@ In addition to plotting the mean crater geometry, we can plot distributions of t
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=1\textwidth]{data_inv_geom_spectra.pdf}
+\includegraphics[width=1\textwidth]{Fig_data_inv_geom_spectra.pdf}
 \caption{Inversion results for after the onset of the December 24, 2018 flank eruption of Mount Etna showing (a) crater geometry and (b) infrasound spectra. Shaded region in (a) indicates $\pm$1 standard deviation in crater geometry parameters}
 \label{fig:data inversion}
 \end{figure}
 
 \begin{figure}[t!]
 \centering
-\includegraphics[width=1\textwidth]{data_inv_corrolations}
+\includegraphics[width=1\textwidth]{Fig_data_inv_corrolations}
 \caption{Distributions of geometry parameters (depth, radius at z=0, 50, and 100 m) and correlations between the parameters. Note that the inversion outputs radii values at $N$ positions equally spaced in depth between outlet and base of crater. Therefore, the output parameters are interpolated between to determine the distributions at specified depths. }
 \label{fig:data corr}
 \end{figure}

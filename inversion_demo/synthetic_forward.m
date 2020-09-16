@@ -16,6 +16,7 @@ path(pathdef)
 addpath ../source/resonance/
 addpath ../source/SBPoperators/
 addpath ../source/inv/
+addpath data/
 
 save_output = 1; % logical to save output normalized amplitude spectra
 
@@ -102,6 +103,6 @@ if save_output == 1
     
     dataF = A.f(1:N/2+1)';
     dataAmp = (abs(dP(1:N/2+1))./max(abs(dP(1:N/2+1))))';
-    save('forwardSpectra','dataF','dataAmp',...
+    save('forwardSpectraSynthetic','dataF','dataAmp',...
         'shape','depth','srcStyle','srcAmp','srcWidth');
 end

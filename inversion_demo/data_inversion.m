@@ -47,7 +47,7 @@ M = problemParametersInv(craterTemp,atmoTemp); % problem parameters required for
 
 %% data %%
 
-dataStr = 'Etna2018Phase1';
+dataStr = 'Etna2018Phase3';
 datafile = strcat(dataStr,'.mat');
 load(datafile); % load data
 data_freq = [dataF, dataAmp]; % format data
@@ -59,7 +59,7 @@ filterProps = [filterband, filterorder, Fs]; % filter properties - same as for d
 
 %% inversion parameters %%
 
-nIter = 100; % number of steps
+nIter = 1000; % number of steps
 
 dx = 0.1; % step size % use step size of 0.05 for paper inversions
 
@@ -121,7 +121,7 @@ simSpec_mean = mean(abs(simSpec_trunc)); % mean spectra
 spec.mean = abs(simSpec_mean)./max(abs(simSpec_mean)); % normalize spectra
 
 pathname = strcat(pwd,'/invOutput'); % directory to save outputs
-filename = strcat('InvOut','_',dataStr,'_',... % file name
+filename = strcat('DataInvOut','_',dataStr,'_',... % file name
     'Nit',num2str(nIter),'_',...
     'R0',num2str(geomR0),'m_','D',num2str(geomDepth),'m_',...
     'T',num2str(craterTemp),'C_',...

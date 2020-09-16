@@ -17,14 +17,15 @@ path(pathdef)
 addpath ../source/resonance/
 addpath ../source/SBPoperators/
 addpath ../source/inv/
+addpath data/
 
-save_output = 0; % logical that determines if outputs are saved or not
+save_output = 1; % logical that determines if outputs are saved or not
 plot_output = 1; % logical that determines if outputs are plotted
 plot_input = 1; % logical that determines if synthetic inputs are plotted
 
 %% load synthetic data %%
 
-dataStr = 'forwardSpectraSyn';
+dataStr = 'forwardSpectraSynthetic';
 datafile = strcat(dataStr,'.mat');
 load(datafile); % load data
 data_freq = [dataF, dataAmp]; % format data
@@ -69,7 +70,7 @@ M = problemParametersInv(craterTemp,atmoTemp); % problem parameters required for
 
 %% inversion parameters %%
 
-nIter = 10000; % number of steps
+nIter = 1000; % number of steps
 dx = 0.05; % step size % use step size of 0.05 for paper inversions
 freqLim = 3; % high cut frequency limit for misfit function (Hz)
 
@@ -129,7 +130,7 @@ simSpec_mean = mean(abs(simSpec_trunc)); % mean spectra
 spec.mean = abs(simSpec_mean)./max(abs(simSpec_mean)); % normalize spectra
 
 pathname = strcat(pwd,'/invOutput'); % directory to save outputs
-filename = strcat('InvOut','_',dataStr,'_',... % file name
+filename = strcat('SyntheticInvOut','_',... % file name
     'Nit',num2str(nIter),'_',...
     'R0',num2str(geomR0),'m_','D',num2str(geomDepth),'m_',...
     'T',num2str(craterTemp),'C_',...

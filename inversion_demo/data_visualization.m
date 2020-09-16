@@ -35,7 +35,7 @@ ylabel('\Delta p(\omega,r)');
 
 %% load inversion output %%
 
-load InvOut_example.mat
+load DataInvOut_example.mat
 
 %% crater geometry %%    
 
@@ -126,7 +126,7 @@ legend('Data','Initial','Final','Mean Spectra','Mean Geometry');
 
 %% parameter histograms %%
     
-depths = [0 50 100];
+depths = [0 50 75];
 param_hist = zeros(length(x_trunc),length(depths));
 
 tic
@@ -172,38 +172,38 @@ end
 toc
 
 
-% %% parameter correlations %%
-%     
-% crater_depth = x_trunc(:,1).*geomParams(1);
-% mPlot = [crater_depth, param_hist];
-% mNames = {'Depth','Radius at z=0 m','Radius at z=50 m','Radius at z=100 m'};
-% 
-% 
-% PlotCorrelations(mPlot, mNames, []);
+%% parameter correlations %%
+    
+crater_depth = x_trunc(:,1).*geomParams(1);
+mPlot = [crater_depth, param_hist];
+mNames = {'Depth','Radius at z=0 m','Radius at z=50 m','Radius at z=75 m'};
 
 
-% %% parameter histograms %%
-% figure(4);
-% x_trunc = x(burn_in:end,:); % remove burn-in values
-% k = length(params);
-% kGeom = length(geomParams);
-% kSrc = length(srcParams);
-% for i = 1:k
-%     
-%     paramPlot = params(i)*x_trunc(:,i);
-%     subplot(1,k,i); hold on; box on;
-%     histogram(paramPlot);
-%     vline(lowerBnds(i));
-%     vline(upperBnds(i));
-%     xlim([lowerBnds(i) upperBnds(i)])
-% end
-% 
-% %% parameter time evolution %%
-% figure(5);
-% for i = 1:k
-%     paramPlot = params(i)*x_trunc(:,i);
-%     subplot(1,k,i); hold on; box on;
-%     plot(paramPlot);
-%     vline(burn_in);
-%     xlim([1 count])
-% end
+PlotCorrelations(mPlot, mNames, []);
+
+
+%% parameter histograms %%
+figure(4);
+x_trunc = x(burn_in:end,:); % remove burn-in values
+k = length(params);
+kGeom = length(geomParams);
+kSrc = length(srcParams);
+for i = 1:k
+    
+    paramPlot = params(i)*x_trunc(:,i);
+    subplot(1,k,i); hold on; box on;
+    histogram(paramPlot);
+    vline(lowerBnds(i));
+    vline(upperBnds(i));
+    xlim([lowerBnds(i) upperBnds(i)])
+end
+
+%% parameter time evolution %%
+figure(5);
+for i = 1:k
+    paramPlot = params(i)*x_trunc(:,i);
+    subplot(1,k,i); hold on; box on;
+    plot(paramPlot);
+    vline(burn_in);
+    xlim([1 count])
+end
