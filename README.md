@@ -8,13 +8,18 @@ For more details see:
 
 The first release of this repository is archived at Zenodo: [https://doi.org/10.5281/zenodo.3235683](https://doi.org/10.5281/zenodo.3235683) and contains the codes associated with [Watson et al. (2019)](https://doi.org/10.1016/j.jvolgeores.2019.05.007). 
 
-<a href="https://doi.org/10.5281/zenodo.3235683"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3235683.svg" alt="DOI"></a>
-
 CRes can be used to inverted harmonic infrasound observations for crater geometry. An example of this procedure applied at Villarrica Volcano, Chile, is featured in the first release with details described in [Watson et al. (2019)](https://doi.org/10.1016/j.jvolgeores.2019.05.007).
 
 The second release of CRes contains the codes associated with [Watson et al. (2020)](https://doi.org/10.1016/j.jvolgeores.2019.05.007). The second release contains more information about inverting harmonic infrasound observations for crater geometry including (1) a user guide that describes the inversion methodology, (2) a synthetic example, and (3) examples of the inversion procedure applied at Mount Etna. The Mount Etna data set can be downloaded from [https://doi.org/10.13127/etna_infra/raw_20181223_25](https://doi.org/10.13127/etna_infra/raw_20181223_25). Note that the data is provided in SAC format and can be converted to loaded into Matlab using rdsac: [https://github.com/IPGP/sac-matlab](https://github.com/IPGP/sac-matlab).
 
-The second release of this repository will be archived at Zenodo and contains the codes associated with Watson et al. (2020). 
+The second release of this repository will be archived at Zenodo: [https://doi.org/10.5281/zenodo.4032469](https://doi.org/10.5281/zenodo.4032469) contains the codes associated with Watson et al. (2020). 
+
+
+**First release, v0.0:**
+<a href="https://doi.org/10.5281/zenodo.3235683"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3235683.svg" alt="DOI"></a>
+
+**Second release, v1.0:**
+<a href="https://zenodo.org/badge/latestdoi/176619362"><img src="https://zenodo.org/badge/176619362.svg" alt="DOI"></a>
 
 ### How do I get set up? ###
 * Clone this respository to your local directory
