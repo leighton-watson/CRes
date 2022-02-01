@@ -87,32 +87,48 @@ xlabel('Frequency (Hz)');
 ylabel('Normalized Amplitude');
 title('Source: Time Domain');
 
-% temperature
+% spatially varying temperature
+% depth = 300;
+% T1 = 1100;
+% T2 = 1000;
+% T3 = 450;
+% D1 = 55;
+% Ta = -7.5;
+% 
+% idx_z_crater = D1+1;
+% idx_z_conduit = depth-D1;
+% 
+% T_profile1 = linspace(T3,T2,idx_z_crater);
+% T_profile2 = linspace(T2, T1, idx_z_conduit);
+% T_profile = [T_profile1 T_profile2]';
+% Tp = smoothdata(T_profile,'lowess');
+% Z = [0:1:depth]';
+% Z = flipud(Z);
+% Tp = flipud(Tp);
+% figure(3); clf;
+% plot(Tp,Z); hold on;
+% set(gca,'YDir','Reverse');
+% ylabel('Depth (m)');
+% xlabel('Temperature (C)');
+% grid on;
+% M = problemParameters_temp(Tp,Ta,Z);
+
+% constant temperature
 depth = 300;
-T1 = 1100;
-T2 = 1000;
-T3 = 450;
-D1 = 55;
-Ta = -7.5;
-
-idx_z_crater = D1+1;
-idx_z_conduit = depth-D1;
-
-T_profile1 = linspace(T3,T2,idx_z_crater);
-T_profile2 = linspace(T2, T1, idx_z_conduit);
-T_profile = [T_profile1 T_profile2]';
-Tp = smoothdata(T_profile,'lowess');
 Z = [0:1:depth]';
 Z = flipud(Z);
-Tp = flipud(Tp);
+T = 300; % constant temperature in crater/conduit [C]
+Tp = T*ones(size(Z));
+Ta = -7.5; % temperature at crater outlet [C]
 figure(3); clf;
 plot(Tp,Z); hold on;
 set(gca,'YDir','Reverse');
 ylabel('Depth (m)');
 xlabel('Temperature (C)');
 grid on;
-M = problemParameters_temp(Tp,Ta,Z);
-   
+M = problemParameters_temp(Tp,Ta,Z);   
+
+return
 
 %% CRES  %%
 
@@ -143,7 +159,7 @@ for j = 1:L
     
     for i = 1:min([5,length(imax)])
         f0_sim(j,i) = sim.f(imax(i));
-        h = vline(sim.f(imax(i)));
+    %    h = vline(sim.f(imax(i)));
     end
 end
 f = sim.f;
@@ -151,7 +167,7 @@ toc
 
 %% save outputs
 
-save('CRES.mat','f0_sim','DEPTH_VECTOR','SPECTRA','SPECTRA_NORM','f');
+save('CRES_Output.mat','f0_sim','DEPTH_VECTOR','SPECTRA','SPECTRA_NORM','f');
 
 %% FORMAT PEAK FREQ VECTOR %%
 
@@ -162,6 +178,8 @@ hold on; grid on;
 xlabel('Peak Freq. (Hz)');
 ylabel('Depth (m)');
 plot(f0_sim(:,2), DEPTH_VECTOR);
+
+return
 
 idx1 = find(DEPTH_VECTOR == 106);
 idx2 = find(DEPTH_VECTOR == 105);
