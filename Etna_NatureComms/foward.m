@@ -113,30 +113,52 @@ title('Source: Time Domain');
 % grid on;
 % M = problemParameters_temp(Tp,Ta,Z);
 
-% constant temperature
+% % constant temperature
+% depth = 300;
+% Z = [0:1:depth]';
+% Z = flipud(Z);
+% T = 400; % constant temperature in crater/conduit [C]
+% Tp = T*ones(size(Z));
+% Ta = -7.5; % temperature at crater outlet [C]
+% figure(3); clf;
+% plot(Tp,Z); hold on;
+% set(gca,'YDir','Reverse');
+% ylabel('Depth (m)');
+% xlabel('Temperature (C)');
+% grid on;
+% M = problemParameters_temp(Tp,Ta,Z);   
+
+% linear temperature profile
 depth = 300;
 Z = [0:1:depth]';
 Z = flipud(Z);
-T = 300; % constant temperature in crater/conduit [C]
-Tp = T*ones(size(Z));
+nz = length(Z);
+Tbottom = 400;
+Ttop = 200;
+Tp = linspace(Tbottom,Ttop,nz);
 Ta = -7.5; % temperature at crater outlet [C]
 figure(3); clf;
-plot(Tp,Z); hold on;
+plot(Tp, Z);
+hold on;
 set(gca,'YDir','Reverse');
 ylabel('Depth (m)');
 xlabel('Temperature (C)');
 grid on;
 M = problemParameters_temp(Tp,Ta,Z);   
 
-return
+
+
 
 %% CRES  %%
 
 % CRes outputs
-DEPTH_VECTOR = depth:-10:50;
+DEPTH_VECTOR = depth:-1:50;
 L = length(DEPTH_VECTOR);
 SPECTRA = zeros(N/2+1, L,1);
 SPECTRA_NORM = zeros(N/2+1, L,1);
+
+TRANS_FUNC = zeros(N/2+1, L,1);
+TRANS_FUNC_NORM = zeros(N/2+1, L,1);
 
 % CRes inversion
 
@@ -149,13 +171,16 @@ for j = 1:L
     res = resonance1d_temp(shape, DEPTH_VECTOR(j), freq, Nf, style, order, M); % compute transfer function
     
     sim.f = res.f; % frequency vector
-    sim.P = (res.P(1:N/2+1).*S(1:N/2+1));
-    sim.PNorm = (res.P(1:N/2+1).*S(1:N/2+1))./max(res.P(1:N/2+1).*S(1:N/2+1));
+    %sim.P = (res.P(1:N/2+1).*S(1:N/2+1));
+    %sim.PNorm = (res.P(1:N/2+1).*S(1:N/2+1))./max(res.P(1:N/2+1).*S(1:N/2+1));
     
-    SPECTRA(:,j) = abs(sim.P);
-    SPECTRA_NORM(:,j) = abs(sim.PNorm);
+    TRANS_FUNC(:,j) = res.P(1:N/2+1);
+    TRANS_FUNC_NORM(:,j) = (res.P(1:N/2+1))./max(res.P(1:N/2+1));
+    
+    %SPECTRA(:,j) = abs(sim.P);
+    %SPECTRA_NORM(:,j) = abs(sim.PNorm);
     %[f0_sim(j), Q_sim(j)] = resPeakProps(sim.f,abs(sim.P));
-    [xmax,imax,xmin,imin] = extrema(abs(sim.P));
+    [xmax,imax,xmin,imin] = extrema(abs(TRANS_FUNC(:,j)));
     
     for i = 1:min([5,length(imax)])
         f0_sim(j,i) = sim.f(imax(i));
@@ -167,7 +192,7 @@ toc
 
 %% save outputs
 
-save('CRES_Output.mat','f0_sim','DEPTH_VECTOR','SPECTRA','SPECTRA_NORM','f');
+save('CRES_Output.mat','f0_sim','DEPTH_VECTOR','TRANS_FUNC','TRANS_FUNC_NORM','f','Tp');
 
 %% FORMAT PEAK FREQ VECTOR %%
 
