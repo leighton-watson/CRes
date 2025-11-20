@@ -26,8 +26,9 @@ The second release of this repository will be archived at Zenodo: [https://doi.o
 * demo contains example script files.
 * inversion_demo contains example files for the inversion procedure.
 * doc contains the user guide.
-* JVGR2019 contains files associated with [Watson et al. (2019)](https://doi.org/10.1016/j.jvolgeores.2019.05.007).
-* GRL2020 contains files associated with Watson et al. (2020).
+
+### Related repository ###
+This repository has be reorganised to keep the code based in this repository smaller. All of the data files and custom scripts for producing figures from the papers referenced above (and others) are now located at [https://github.com/leighton-watson/CResPapers](https://github.com/leighton-watson/CResPapers). 
 
 ### Who do I talk to? ###
 * Leighton Watson: leighton.watson@canterbury.ac.nz
