@@ -30,8 +30,6 @@ The second release of this repository will be archived at Zenodo: [https://doi.o
 * GRL2020 contains files associated with Watson et al. (2020).
 
 ### Who do I talk to? ###
-* Leighton Watson: leightonmwatson@gmail.com
-
-
+* Leighton Watson: leighton.watson@canterbury.ac.nz
 
 
